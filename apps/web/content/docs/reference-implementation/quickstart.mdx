@@ -10,6 +10,7 @@ Get from zero to a reproducible manifest workflow in a few commands using the re
 ## Mental model
 
 - `generate` creates the standardized contract artifact (`sondage.manifest.json`).
+- `manifest` prints Sonde's own reference Sondage manifest.
 - `run` validates deterministic behavior against that local contract.
 - `score` outputs a compatibility report that can be compared across tools.
 
@@ -57,7 +58,30 @@ Expected output shape:
 }
 ```
 
-### 3) Run deterministic check
+### 3) Inspect Sonde reference manifest
+
+```sh
+sonde manifest --json
+```
+
+Expected output shape:
+
+```json
+{
+  "ok": true,
+  "apiVersion": "1.0.0",
+  "command": "manifest",
+  "result": {
+    "version": "1.0.0",
+    "cli": {
+      "name": "sonde",
+      "binary": "sonde"
+    }
+  }
+}
+```
+
+### 4) Run deterministic check
 
 ```sh
 sonde run vercel --json
@@ -78,7 +102,7 @@ Expected output shape:
 }
 ```
 
-### 4) Compute score
+### 5) Compute score
 
 ```sh
 sonde score vercel --json

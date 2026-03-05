@@ -1,0 +1,57 @@
+---
+title: AI-Native CLI Requirements
+description: Required and recommended capabilities for CLIs that want high Sonde compliance.
+---
+
+## Purpose
+
+Define a clear, testable baseline for AI-native CLI design so teams can implement it and verify it with Sonde.
+
+## Required baseline (Sonde compliance)
+
+To be considered AI-native ready in Sonde, a CLI should expose:
+
+- `manifest` command
+  - Returns the CLI's Sondage manifest contract in machine-readable form.
+- Machine-readable output mode
+  - `--json` (preferred) or equivalent (`--output json`, `--format json`).
+- Non-interactive execution mode
+  - `--non-interactive` (preferred) or equivalent (`--no-input`, `--yes`, `--assume-yes`).
+- Safe planning mode for mutating actions
+  - `--dry-run` (preferred) or equivalent preview/plan mode.
+- Response-size control
+  - `--fields` (preferred) or equivalent selective output projection.
+
+## Recommended AI-native practices
+
+- Make JSON output deterministic and stable across repeated runs.
+- Keep prompts out of automation paths when non-interactive mode is active.
+- Keep command/flag help output structured and consistent for parser tooling.
+- Reject unsafe inputs early (for example control chars, path traversal, malformed IDs).
+- Prefer full-payload machine inputs and explicit schemas over ambiguous flag combinations.
+
+## How Sonde evaluates this today
+
+- Sonde uses **score-only** compliance semantics.
+- Missing capabilities reduce score and appear in report `metrics[*].details` notes.
+- Sonde does not hard-fail solely because a required AI-native capability is missing.
+
+## Validation flow for CLI authors
+
+```sh
+sonde generate <cli> --json
+sonde run <cli> --json
+sonde score <cli> --json
+```
+
+Look for the AI-native readiness metric in score output and resolve each `MISS:` note.
+
+## External guidance
+
+- [You Need to Rewrite Your CLI for AI Agents](https://justin.poehnelt.com/posts/rewrite-your-cli-for-ai-agents)
+
+## See also
+
+- [Sonde](/docs/foundations/sonde)
+- [Manifest](/docs/foundations/sondage-manifest)
+- [Scoring 100 Guide](/docs/evaluation/scoring-100-guide)

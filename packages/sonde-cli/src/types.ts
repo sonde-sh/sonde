@@ -32,7 +32,7 @@ export interface CommandContext {
 export interface JsonSuccess<T> {
   ok: true;
   apiVersion: string;
-  command: "generate" | "run" | "score" | "serve";
+  command: "generate" | "manifest" | "run" | "score" | "serve";
   cli?: string;
   result: T;
 }
@@ -40,7 +40,7 @@ export interface JsonSuccess<T> {
 export interface JsonFailure {
   ok: false;
   apiVersion: string;
-  command?: "generate" | "run" | "score" | "serve";
+  command?: "generate" | "manifest" | "run" | "score" | "serve";
   cli?: string;
   error: {
     message: string;

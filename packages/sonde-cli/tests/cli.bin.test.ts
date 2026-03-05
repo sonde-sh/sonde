@@ -66,4 +66,36 @@ describe("sonde binary", () => {
     },
     20_000,
   );
+
+  it(
+    "prints built-in manifest in json mode",
+    async () => {
+      await execFileAsync("pnpm", ["build"], {
+        cwd: workspaceRoot,
+      });
+
+      const result = await execFileAsync("node", [
+        path.join(packageRoot, "dist/src/bin.js"),
+        "manifest",
+        "--json",
+      ]);
+
+      const parsed = JSON.parse(result.stdout);
+      expect(parsed).toEqual(
+        expect.objectContaining({
+          ok: true,
+          apiVersion: "1.0.0",
+          command: "manifest",
+          result: expect.objectContaining({
+            version: "1.0.0",
+            cli: expect.objectContaining({
+              name: "sonde",
+              binary: "sonde",
+            }),
+          }),
+        }),
+      );
+    },
+    20_000,
+  );
 });

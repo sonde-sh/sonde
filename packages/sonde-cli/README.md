@@ -28,6 +28,7 @@ Commands:
 
 ```sh
 sonde generate <cli> [--json]
+sonde manifest [--json]
 sonde run <cli> [--json]
 sonde score <cli> [--json]
 sonde serve [--json]
@@ -43,3 +44,5 @@ sonde serve [--json]
 Commands that depend on a manifest (`run`, `score`, `serve`) read:
 
 - `sondage.manifest.json` in the current working directory
+
+`sonde manifest` prints Sonde's own Sondage manifest contract and does not require a local manifest file.

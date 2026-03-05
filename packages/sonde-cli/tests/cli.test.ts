@@ -94,6 +94,31 @@ describe("sonde CLI", () => {
     });
   });
 
+  it("runs manifest command in json mode", async () => {
+    const { runCli } = await import("../src/cli.js");
+    const { io, stdout, stderr } = createIo();
+
+    const exitCode = await runCli(["manifest", "--json"], io);
+
+    expect(exitCode).toBe(0);
+    expect(stderr).toEqual([]);
+    expect(stdout).toHaveLength(1);
+    const firstLine = stdout.at(0);
+    expect(firstLine).toBeDefined();
+    expect(JSON.parse(firstLine ?? "")).toEqual({
+      ok: true,
+      apiVersion: "1.0.0",
+      command: "manifest",
+      result: expect.objectContaining({
+        version: "1.0.0",
+        cli: expect.objectContaining({
+          name: "sonde",
+          binary: "sonde",
+        }),
+      }),
+    });
+  });
+
   it("runs run command in json mode", async () => {
     const { runCli } = await import("../src/cli.js");
     runCommandMock.mockResolvedValue({ status: "ok" });
@@ -290,6 +315,24 @@ describe("sonde CLI", () => {
       apiVersion: "1.0.0",
       error: {
         message: "Unexpected extra arguments for 'generate'",
+      },
+    });
+  });
+
+  it("returns error for manifest command with extra arguments", async () => {
+    const { runCli } = await import("../src/cli.js");
+    const { io, stderr } = createIo();
+
+    const exitCode = await runCli(["manifest", "extra", "--json"], io);
+
+    expect(exitCode).toBe(1);
+    const firstError = stderr.at(0);
+    expect(firstError).toBeDefined();
+    expect(JSON.parse(firstError ?? "")).toEqual({
+      ok: false,
+      apiVersion: "1.0.0",
+      error: {
+        message: "Usage: sonde manifest [--json]",
       },
     });
   });

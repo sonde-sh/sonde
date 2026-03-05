@@ -34,6 +34,16 @@ Generate `sondage.manifest.json` from `<cli> --help` and subcommand help output.
 - Writes manifest to `sondage.manifest.json` in current working directory.
 - Probes help commands with a 10s timeout per probe.
 
+### `sonde manifest [--json]`
+
+Print Sonde's own Sondage manifest as a reference implementation payload.
+
+#### Behavior notes
+
+- Does not require `<cli>`.
+- Does not require local `sondage.manifest.json`.
+- Returns a deterministic manifest payload suitable for automation checks.
+
 ### `sonde run <cli> [--json]`
 
 Run deterministic execution checks using local manifest settings.
@@ -86,6 +96,7 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 
 - Usage:
   - `sonde <command> [options]`
+  - `sonde manifest [--json]`
   - `sonde serve [--json]`
   - `sonde <generate|run|score> <cli> [--json]`
 - Unknown commands fail with usage error.
@@ -177,11 +188,13 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 - `sonde --json --help` prints plain text help.
 - `sonde run --version` does not print version; it is treated as missing `<cli>`.
 - `serve` does not accept positional args (`Usage: sonde serve [--json]`).
+- `manifest` does not accept positional args (`Usage: sonde manifest [--json]`).
 - Interactive output patterns (for example prompts like `[y/n]`) mark run results as non-deterministic.
 
 ## See also
 
 - [Quickstart](/docs/reference-implementation/quickstart)
+- [AI-Native CLI Requirements](/docs/foundations/ai-native-cli-requirements)
 - [Serve Protocol](/docs/integration/cli-serve-protocol)
 - [Troubleshooting](/docs/help/troubleshooting)
 - [Scoring 100 Guide](/docs/evaluation/scoring-100-guide)

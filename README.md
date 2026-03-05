@@ -14,6 +14,7 @@ Start here:
 - [Docs index](./apps/web/content/docs/index.mdx)
 - [Sonde](./apps/web/content/docs/foundations/sonde.mdx)
 - [Manifest](./apps/web/content/docs/foundations/sondage-manifest.mdx)
+- [AI-native CLI requirements](./apps/web/content/docs/foundations/ai-native-cli-requirements.mdx)
 - [Quickstart](./apps/web/content/docs/reference-implementation/quickstart.mdx)
 - [CLI reference](./apps/web/content/docs/reference-implementation/cli-reference.mdx)
 - [Serve protocol](./apps/web/content/docs/integration/cli-serve-protocol.mdx)
@@ -43,6 +44,7 @@ npx @sonde-sh/sonde --help
 
 ```sh
 sonde generate <cli> [--json]
+sonde manifest [--json]
 sonde run <cli> [--json]
 sonde score <cli> [--json]
 sonde serve [--json]

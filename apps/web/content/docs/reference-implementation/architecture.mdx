@@ -39,10 +39,12 @@ Describe how Sonde components interact so humans and LLM systems can reason abou
 flowchart TD
   userInput[UserInput] --> sondeCli[SondeCli]
   sondeCli --> generateCmd[generate]
+  sondeCli --> manifestCmd[manifest]
   sondeCli --> runCmd[run]
   sondeCli --> scoreCmd[score]
   sondeCli --> serveCmd[serve]
   generateCmd --> generatorPkg[GeneratorPackage]
+  manifestCmd --> selfManifest[BuiltInManifest]
   generatorPkg --> manifestFile[sondage_manifest_json]
   runCmd --> specPkg[SpecLoadValidate]
   scoreCmd --> specPkg

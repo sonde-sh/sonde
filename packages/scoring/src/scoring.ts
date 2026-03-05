@@ -9,6 +9,7 @@ export interface ScoreWeights {
   predictableFlags: number;
   deterministicOutput: number;
   interactiveBehavior: number;
+  aiNativeReadiness: number;
 }
 
 export interface MetricReport {
@@ -40,11 +41,12 @@ export interface ScoreReport {
 }
 
 const WEIGHTS: ScoreWeights = {
-  jsonSupport: 25,
-  hierarchyConsistency: 20,
-  predictableFlags: 20,
+  jsonSupport: 20,
+  hierarchyConsistency: 15,
+  predictableFlags: 15,
   deterministicOutput: 20,
-  interactiveBehavior: 15,
+  interactiveBehavior: 10,
+  aiNativeReadiness: 20,
 };
 
 function clampScore(input: number): number {
@@ -245,6 +247,97 @@ function scoreInteractiveBehavior(input: ScoreInput): MetricReport {
   };
 }
 
+function findOptionByLong(options: StmOption[], names: readonly string[]): StmOption | undefined {
+  for (const optionName of names) {
+    const found = options.find((option) => option.long === optionName);
+    if (found) {
+      return found;
+    }
+  }
+  return undefined;
+}
+
+function scoreAiNativeReadiness(input: ScoreInput): MetricReport {
+  const allOptions = [
+    ...input.manifest.globalOptions,
+    ...input.manifest.commands.flatMap((command) => command.options),
+  ];
+
+  const hasManifestCommand = input.manifest.commands.some((command) => {
+    if (command.name === "manifest") {
+      return true;
+    }
+    return command.path.join(" ") === "manifest";
+  });
+  const hasJsonFlag = Boolean(
+    findOptionByLong(allOptions, ["--json", "--output", "--format"]) ??
+      allOptions.find((option) => /\bjson\b/i.test(option.description ?? "")),
+  );
+  const hasNonInteractiveFlag = Boolean(
+    findOptionByLong(allOptions, [
+      "--non-interactive",
+      "--no-input",
+      "--yes",
+      "--assume-yes",
+      "--force",
+    ]),
+  );
+  const hasDryRunFlag = Boolean(
+    findOptionByLong(allOptions, ["--dry-run", "--plan", "--preview"]),
+  );
+  const hasFieldMaskFlag = Boolean(
+    findOptionByLong(allOptions, ["--fields", "--select", "--projection"]),
+  );
+
+  const checks = [
+    {
+      id: "manifestCommand",
+      label: "Manifest command (`manifest`)",
+      pass: hasManifestCommand,
+      remediation: "Add a `manifest` command that returns your Sondage manifest.",
+    },
+    {
+      id: "jsonFlag",
+      label: "Machine-readable output flag (`--json` or equivalent)",
+      pass: hasJsonFlag,
+      remediation: "Expose `--json` (or `--output json`/`--format json`) on automation paths.",
+    },
+    {
+      id: "nonInteractiveFlag",
+      label: "Non-interactive execution flag",
+      pass: hasNonInteractiveFlag,
+      remediation: "Add `--non-interactive` or a safe equivalent such as `--no-input`/`--yes`.",
+    },
+    {
+      id: "dryRunFlag",
+      label: "Dry-run flag (`--dry-run` or equivalent)",
+      pass: hasDryRunFlag,
+      remediation: "Add `--dry-run` for mutating operations to support safe agent planning.",
+    },
+    {
+      id: "fieldMaskFlag",
+      label: "Context-window control flag (`--fields` or equivalent)",
+      pass: hasFieldMaskFlag,
+      remediation:
+        "Support `--fields` (or equivalent selective output control) to reduce response size.",
+    },
+  ] as const;
+
+  const passedChecks = checks.filter((check) => check.pass).length;
+  const score = clampScore((passedChecks / checks.length) * 100);
+  const details = checks.map((check) =>
+    check.pass ? `PASS: ${check.label}` : `MISS: ${check.label}. ${check.remediation}`,
+  );
+
+  return {
+    id: "aiNativeReadiness",
+    score,
+    weight: WEIGHTS.aiNativeReadiness,
+    weightedScore: (score / 100) * WEIGHTS.aiNativeReadiness,
+    details,
+  };
+}
+
 export function scoreManifest(input: ScoreInput): ScoreReport {
   const metrics = [
     scoreJsonSupport(input),
@@ -252,6 +345,7 @@ export function scoreManifest(input: ScoreInput): ScoreReport {
     scorePredictableFlags(input),
     scoreDeterministicOutput(input),
     scoreInteractiveBehavior(input),
+    scoreAiNativeReadiness(input),
   ];
 
   const total = clampScore(

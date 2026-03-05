@@ -22,6 +22,7 @@ Provide practical command sequences for common Sonde usage patterns when buildin
 
 ```sh
 sonde generate vercel --json
+sonde manifest --json
 sonde run vercel --json
 sonde score vercel --json
 ```
@@ -43,6 +44,7 @@ Then write newline-delimited requests:
 
 ```sh
 sonde generate supabase --json
+sonde manifest --json
 sonde run supabase --json
 sonde score supabase --json
 ```
@@ -53,6 +55,7 @@ Use JSON output in CI and parse `ok` + command result fields.
 
 - If a target CLI lacks stable help output, regenerate manifest after CLI upgrades.
 - If run output includes prompts, fix CLI non-interactive behavior before relying on score.
+- `sondage.manifest.json` is Sonde's contract artifact; fixture `manifest.json` files are separate tool-protocol examples.
 
 ## See also
 

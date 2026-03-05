@@ -5,6 +5,7 @@ import { runCommand } from "@sonde-sh/runtime";
 import { scoreManifest } from "@sonde-sh/scoring";
 import { loadManifest as loadManifestFromSpec } from "@sonde-sh/spec";
 
+import { createSondeSelfManifest } from "./self-manifest.js";
 import type { CommandContext, SondeManifest } from "./types.js";
 
 export async function loadManifest(cwd: string): Promise<SondeManifest> {
@@ -19,6 +20,10 @@ export async function handleGenerate(context: CommandContext): Promise<unknown> 
   return generateManifest({
     cli: context.cli,
   });
+}
+
+export async function handleManifest(): Promise<unknown> {
+  return createSondeSelfManifest();
 }
 
 export async function handleRun(context: CommandContext): Promise<unknown> {

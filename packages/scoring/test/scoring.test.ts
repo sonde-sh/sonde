@@ -43,12 +43,25 @@ describe("scoring", () => {
         version: "1.0.0",
         generatedAt: "2026-01-01T00:00:00.000Z",
         cli: { name: "mycli", binary: "mycli" },
-        globalOptions: [{ long: "--help", takesValue: false }],
+        globalOptions: [
+          { long: "--help", takesValue: false },
+          { long: "--non-interactive", takesValue: false },
+          { long: "--dry-run", takesValue: false },
+          { long: "--fields", takesValue: true },
+        ],
         commands: [
           {
             name: "deploy",
             path: ["deploy"],
             options: [{ long: "--json", takesValue: false }],
+            subcommands: [],
+            supportsJson: true,
+            mayPrompt: false,
+          },
+          {
+            name: "manifest",
+            path: ["manifest"],
+            options: [],
             subcommands: [],
             supportsJson: true,
             mayPrompt: false,
@@ -62,7 +75,8 @@ describe("scoring", () => {
     expect(report.total).toBeLessThanOrEqual(100);
     expect(report.reportVersion).toBe("1.0.0");
     expect(report.manifestVersion).toBe("1.0.0");
-    expect(report.metrics).toHaveLength(5);
+    expect(report.metrics).toHaveLength(6);
+    expect(report.metrics.some((metric) => metric.id === "aiNativeReadiness")).toBe(true);
   });
 
   it("ships expected analyzer entries", () => {

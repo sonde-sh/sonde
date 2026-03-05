@@ -2,14 +2,20 @@ import process from "node:process";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { handleGenerate, handleRun, handleScore, loadManifest } from "./command-handlers.js";
+import {
+  handleGenerate,
+  handleManifest,
+  handleRun,
+  handleScore,
+  loadManifest,
+} from "./command-handlers.js";
 import { createNodeIo } from "./io.js";
 import { CliError, writeError, writeResult } from "./output.js";
 import { runServeLoop } from "./serve.js";
 import { SONDE_JSON_API_VERSION } from "./types.js";
 import type { CliIo, JsonFailure } from "./types.js";
 
-const COMMANDS = ["generate", "run", "serve", "score"] as const;
+const COMMANDS = ["generate", "manifest", "run", "serve", "score"] as const;
 const HELP_FLAGS = new Set(["--help", "-h"]);
 const VERSION_FLAGS = new Set(["--version", "-v"]);
 
@@ -57,6 +63,17 @@ export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promis
     if (parsed.command === "serve") {
       const manifest = await loadManifest(process.cwd());
       await runServeLoop(io, manifest, parsed.json);
+      return 0;
+    }
+
+    if (parsed.command === "manifest") {
+      const result = await handleManifest();
+      writeResult(io, parsed.json, {
+        ok: true,
+        apiVersion: SONDE_JSON_API_VERSION,
+        command: "manifest",
+        result,
+      });
       return 0;
     }
 
@@ -160,9 +177,9 @@ export function parseArgs(argv: string[]): ParsedArgs {
     };
   }
 
-  if (command === "serve") {
+  if (command === "serve" || command === "manifest") {
     if (nonFlagArgs.length > 1) {
-      throw new CliError("Usage: sonde serve [--json]");
+      throw new CliError(`Usage: sonde ${command} [--json]`);
     }
 
     return {
@@ -204,6 +221,7 @@ function getUsage(command?: SondeCommand): string {
       "",
       "Commands:",
       "  generate <cli>    Generate a Sonde manifest for <cli>",
+      "  manifest          Print Sonde's own Sondage manifest",
       "  run <cli>         Validate deterministic behavior from local manifest",
       "  score <cli>       Score manifest-aligned automation reliability",
       "  serve             Expose manifest tools over JSON line protocol",
@@ -215,8 +233,8 @@ function getUsage(command?: SondeCommand): string {
     ].join("\n");
   }
 
-  if (command === "serve") {
-    return "Usage: sonde serve [--json]";
+  if (command === "serve" || command === "manifest") {
+    return `Usage: sonde ${command} [--json]`;
   }
 
   return `Usage: sonde ${command} <cli> [--json]`;

@@ -38,7 +38,15 @@ Review these fields in `result`:
 - `interactiveDetected` should be `false`
 - `usedPreferences` should include JSON and non-interactive flags when available
 
-### 3) Score with repeat runs
+### 3) Validate manifest contract exposure
+
+```sh
+sonde manifest --json
+```
+
+Use this output as the reference for what target CLIs should expose via their own `manifest` command.
+
+### 4) Score with repeat runs
 
 ```sh
 sonde score <cli> --json
@@ -65,11 +73,14 @@ Target:
 - Prompt-like output appears in stdout/stderr.
 - Non-zero exits in baseline or repeat run.
 - Missing machine-readable output support.
+- Missing AI-native capabilities (`manifest`, non-interactive, dry-run, field selection).
 
 ## Improving score systematically
 
 - Prefer stable output formats (`--json`, `--format json`, or equivalent).
 - Add explicit non-interactive mode (`--non-interactive`, `--yes`, etc.).
+- Add a `manifest` command and expose required capability flags in help output.
+- Add `--dry-run` and `--fields` (or equivalent) for safer agent execution.
 - Keep `--help` and command metadata deterministic.
 - Avoid timestamps/random values in default output paths checked by Sonde.
 
@@ -82,9 +93,11 @@ Target:
 
 - `run` and `score` currently execute `manifest.cli.binary --help`; ensure that path is deterministic first.
 - Passing `<cli>` to `run`/`score` does not override `manifest.cli.binary`.
+- AI-native capability gaps are score penalties with remediation notes (not hard failures).
 
 ## See also
 
 - [CLI Reference](/docs/reference-implementation/cli-reference)
+- [AI-Native CLI Requirements](/docs/foundations/ai-native-cli-requirements)
 - [Quickstart](/docs/reference-implementation/quickstart)
 - [Troubleshooting](/docs/help/troubleshooting)
