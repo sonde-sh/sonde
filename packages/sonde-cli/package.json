@@ -1,6 +1,7 @@
 {
   "name": "@sonde-sh/sonde",
   "version": "0.1.0",
+  "description": "Reference CLI for generating, validating, and scoring Sonde manifest workflows.",
   "private": false,
   "type": "module",
   "license": "MIT",

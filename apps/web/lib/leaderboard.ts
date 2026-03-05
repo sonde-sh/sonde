@@ -4,6 +4,9 @@ import path from "node:path";
 export interface LeaderboardRow {
   cli: string;
   score: string;
+  manifestVersion: string;
+  reportVersion: string;
+  schemaStatus: string;
   jsonSupport: string;
   interactivePrompts: string;
   notes: string;
@@ -114,6 +117,18 @@ function parseRow(row: unknown, sourceFile: string): ParsedRow | null {
     row: {
       cli,
       score,
+      manifestVersion:
+        readString(row.manifestVersion) ??
+        readString(row.manifest_version) ??
+        readString(row.version) ??
+        "-",
+      reportVersion:
+        readString(row.reportVersion) ??
+        readString(row.report_version) ??
+        "-",
+      schemaStatus: readBooleanLike(
+        row.schemaValid ?? row.schema_valid ?? row.contractStatus ?? row.contract_status,
+      ),
       jsonSupport: readBooleanLike(
         row.jsonSupport ?? row.json_output ?? row.jsonOutput ?? row.json
       ),
@@ -197,6 +212,9 @@ export async function loadLeaderboardRows(): Promise<{
       rows.push({
         cli: path.basename(fileName, ".json"),
         score: "-",
+        manifestVersion: "-",
+        reportVersion: "-",
+        schemaStatus: "-",
         jsonSupport: "-",
         interactivePrompts: "-",
         notes: "Invalid JSON report file",

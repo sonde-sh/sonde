@@ -1,15 +1,15 @@
 # Sonde Supabase Example
 
-Reference fixture for evaluating and improving the Supabase CLI as an AI-native, AI-friendly CLI.
-Use it to generate a manifest, run deterministic checks, and measure Sonde score in a Supabase-oriented workflow.
+Reference fixture showing how a Supabase workflow maps to the Sonde manifest contract.
+Use it to generate standardized artifacts, run deterministic checks, and produce comparable reports through the reference CLI.
 
 ## Canonical docs
 
 Use canonical docs under `apps/web/content/docs`:
 
-- [Quickstart](../../apps/web/content/docs/quickstart.mdx)
-- [CLI reference](../../apps/web/content/docs/cli-reference.mdx)
-- [Serve protocol](../../apps/web/content/docs/cli-serve-protocol.mdx)
+- [Quickstart](../../apps/web/content/docs/reference-implementation/quickstart.mdx)
+- [CLI reference](../../apps/web/content/docs/reference-implementation/cli-reference.mdx)
+- [Serve protocol](../../apps/web/content/docs/integration/cli-serve-protocol.mdx)
 
 ## Example commands
 
@@ -26,4 +26,4 @@ sonde score supabase --json
 sonde serve --json
 ```
 
-This fixture includes a sample `manifest.json` tool manifest for local protocol testing and agent/tool integrations.
+This fixture includes a sample `manifest.json` tool manifest for local protocol testing and contract-aware agent/tool integrations.

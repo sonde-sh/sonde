@@ -6,10 +6,10 @@ Sonde CLI for evaluating and improving AI-native/AI-friendly CLI behavior throug
 
 Use `apps/web/content/docs` as the source of truth:
 
-- [CLI reference](../../apps/web/content/docs/cli-reference.mdx)
-- [Quickstart](../../apps/web/content/docs/quickstart.mdx)
-- [Serve protocol](../../apps/web/content/docs/cli-serve-protocol.mdx)
-- [Troubleshooting](../../apps/web/content/docs/troubleshooting.mdx)
+- [CLI reference](../../apps/web/content/docs/reference-implementation/cli-reference.mdx)
+- [Quickstart](../../apps/web/content/docs/reference-implementation/quickstart.mdx)
+- [Serve protocol](../../apps/web/content/docs/integration/cli-serve-protocol.mdx)
+- [Troubleshooting](../../apps/web/content/docs/help/troubleshooting.mdx)
 
 ## Install
 

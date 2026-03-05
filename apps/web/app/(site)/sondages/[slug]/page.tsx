@@ -23,7 +23,7 @@ export default async function SondageReportPage({ params }: Readonly<SondageRepo
   return (
     <div className="space-y-6">
       <section className="space-y-3 rounded-xl border border-(--border) bg-(--card) p-6">
-        <Badge variant="neutral">Sondage details</Badge>
+        <Badge variant="neutral">Manifest report details</Badge>
         <h1 className="text-3xl font-semibold tracking-tight">{report.row.cli}</h1>
         <p className="text-sm text-(--muted-foreground)">
           Source file:{" "}
@@ -33,12 +33,34 @@ export default async function SondageReportPage({ params }: Readonly<SondageRepo
         </p>
       </section>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-(--muted-foreground)">Score</CardTitle>
           </CardHeader>
           <CardContent className="pt-0 text-2xl font-semibold">{report.row.score}</CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-(--muted-foreground)">Manifest version</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">{report.row.manifestVersion}</CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-(--muted-foreground)">Report version</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">{report.row.reportVersion}</CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-(--muted-foreground)">Schema status</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <Badge variant={isPositive(report.row.schemaStatus) ? "success" : "neutral"}>
+              {report.row.schemaStatus}
+            </Badge>
+          </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">

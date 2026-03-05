@@ -1,7 +1,7 @@
 # Sonde
 
-Sonde is a toolkit for evaluating and building AI-native, AI-friendly CLIs.
-It generates machine-readable CLI manifests, runs deterministic checks, and scores how reliably a CLI works for developers, agents, and automation.
+Sonde defines a stable manifest contract for AI-native CLI workflows and provides tooling to generate, validate, and score against that contract.
+The CLI in this repository is the reference implementation used to produce standardized artifacts for developers, agents, and automation.
 
 ## Canonical docs
 
@@ -12,13 +12,22 @@ The canonical documentation source is:
 Start here:
 
 - [Docs index](./apps/web/content/docs/index.mdx)
-- [Quickstart](./apps/web/content/docs/quickstart.mdx)
-- [CLI reference](./apps/web/content/docs/cli-reference.mdx)
-- [Serve protocol](./apps/web/content/docs/cli-serve-protocol.mdx)
-- [Scoring 100 guide](./apps/web/content/docs/scoring-100-guide.mdx)
-- [Troubleshooting](./apps/web/content/docs/troubleshooting.mdx)
+- [Sonde](./apps/web/content/docs/foundations/sonde.mdx)
+- [Manifest](./apps/web/content/docs/foundations/sondage-manifest.mdx)
+- [Quickstart](./apps/web/content/docs/reference-implementation/quickstart.mdx)
+- [CLI reference](./apps/web/content/docs/reference-implementation/cli-reference.mdx)
+- [Serve protocol](./apps/web/content/docs/integration/cli-serve-protocol.mdx)
+- [Scoring 100 guide](./apps/web/content/docs/evaluation/scoring-100-guide.mdx)
+- [Troubleshooting](./apps/web/content/docs/help/troubleshooting.mdx)
 
-## Install CLI
+## Manifest contract first
+
+- The manifest contract is versioned in `sondage.manifest.json` via `version`.
+- Command JSON envelopes include `apiVersion` to keep integrations parse-safe.
+- Serve protocol readiness and responses include `protocolVersion`.
+- Score reports include `reportVersion` and `manifestVersion` for compatibility tracking.
+
+## Reference implementation (CLI)
 
 ```sh
 npm install -g @sonde-sh/sonde
@@ -39,7 +48,8 @@ sonde score <cli> [--json]
 sonde serve [--json]
 ```
 
-For complete behavior, outputs, and edge cases, use the canonical [CLI reference](./apps/web/content/docs/cli-reference.mdx).
+For complete behavior, outputs, and edge cases, use the canonical [CLI reference](./apps/web/content/docs/reference-implementation/cli-reference.mdx).
+For normative contract semantics, start with [Sonde](./apps/web/content/docs/foundations/sonde.mdx) and [Manifest](./apps/web/content/docs/foundations/sondage-manifest.mdx).
 
 ## Packages
 
@@ -51,11 +61,9 @@ For complete behavior, outputs, and edge cases, use the canonical [CLI reference
 
 ## Versioning and compatibility
 
-- Manifest contract uses semantic versioning in `sondage.manifest.json` via `version` (for example `1.0.0`).
 - Current supported manifest major version is `1`; loading a different major returns `UNSUPPORTED_VERSION`.
-- JSON command envelopes include `apiVersion` for `generate`, `run`, and `score`.
-- `sonde serve --json` includes `protocolVersion` in readiness and per-request responses.
-- Score reports include both `reportVersion` and `manifestVersion` to make downstream compatibility explicit.
+- Manifest versioning follows semantic versioning (`major.minor.patch`).
+- Report and protocol version fields are intended as machine-consumable compatibility guards.
 
 ## Local development
 

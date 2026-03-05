@@ -22,13 +22,13 @@ export async function SondagesPage() {
     <div className="space-y-6">
       <section className="flex flex-wrap items-end justify-between gap-4 rounded-xl border border-(--border) bg-(--card) p-6">
         <div className="space-y-3">
-          <Badge variant="neutral">Sondages</Badge>
+          <Badge variant="neutral">Manifest reports</Badge>
           <h1 className="text-3xl font-semibold tracking-tight">Sondages</h1>
           <p className="max-w-3xl text-sm leading-relaxed text-(--muted-foreground)">
-            These reports evaluate AI-readiness of CLI tools with a consistent
-            scoring model. Each entry captures overall score, JSON support,
-            interactive prompt behavior, and implementation notes so tool quality
-            is easy to compare.
+            These reports compare manifest-aligned automation behavior with a
+            consistent scoring model. Each entry captures contract metadata,
+            score, JSON support, interactive prompt behavior, and implementation
+            notes so quality differences are easy to inspect.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2 text-sm">
@@ -52,7 +52,8 @@ export async function SondagesPage() {
           <CardContent className="space-y-3 p-6">
             <p className="text-sm text-(--muted-foreground)">No reports found yet.</p>
             <p className="text-sm text-(--muted-foreground)">
-              Run your CLI scenarios and refresh to see generated results here.
+              Generate standardized report artifacts from your manifest workflow
+              and refresh to see results here.
             </p>
           </CardContent>
         </Card>
@@ -61,6 +62,9 @@ export async function SondagesPage() {
           <TableHeader>
             <TableRow>
               <TableHead>CLI</TableHead>
+              <TableHead>Manifest</TableHead>
+              <TableHead>Report</TableHead>
+              <TableHead>Schema</TableHead>
               <TableHead>Score</TableHead>
               <TableHead>JSON</TableHead>
               <TableHead>Prompts</TableHead>
@@ -74,6 +78,13 @@ export async function SondagesPage() {
                   <Link className="hover:underline" href={`/sondages/${row.slug}`}>
                     {row.cli}
                   </Link>
+                </TableCell>
+                <TableCell>{row.manifestVersion}</TableCell>
+                <TableCell>{row.reportVersion}</TableCell>
+                <TableCell>
+                  <Badge variant={isPositive(row.schemaStatus) ? "success" : "neutral"}>
+                    {row.schemaStatus}
+                  </Badge>
                 </TableCell>
                 <TableCell>{row.score}</TableCell>
                 <TableCell>

@@ -1,5 +1,8 @@
 {
   "cli": "vercel",
+  "manifestVersion": "1.0.0",
+  "reportVersion": "1.0.0",
+  "schemaValid": true,
   "score": 91,
   "jsonSupport": true,
   "interactivePrompts": false,

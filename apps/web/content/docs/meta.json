@@ -2,15 +2,10 @@
   "title": "Sonde Docs",
   "pages": [
     "index",
-    "quickstart",
-    "cli-reference",
-    "cli-serve-protocol",
-    "scoring-100-guide",
-    "sonde",
-    "sondage-manifest",
-    "architecture",
-    "examples",
-    "troubleshooting",
-    "glossary"
+    "foundations",
+    "reference-implementation",
+    "integration",
+    "evaluation",
+    "help"
   ]
 }

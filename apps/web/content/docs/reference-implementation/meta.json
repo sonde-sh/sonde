@@ -1,0 +1,4 @@
+{
+  "title": "Reference implementation (CLI)",
+  "pages": ["quickstart", "cli-reference", "architecture"]
+}

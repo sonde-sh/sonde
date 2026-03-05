@@ -1,6 +1,7 @@
 {
   "name": "@sonde-sh/generator",
   "version": "0.1.0",
+  "description": "Manifest generation engine for the Sonde reference implementation.",
   "type": "module",
   "private": false,
   "license": "MIT",

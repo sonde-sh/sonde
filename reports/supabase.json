@@ -1,5 +1,8 @@
 {
   "cli": "supabase",
+  "manifestVersion": "1.0.0",
+  "reportVersion": "1.0.0",
+  "schemaValid": true,
   "score": 84,
   "jsonSupport": true,
   "interactivePrompts": true,

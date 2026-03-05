@@ -1,11 +1,17 @@
 ---
 title: Quickstart
-description: Fast path to evaluate and improve an AI-native, AI-friendly CLI with Sonde.
+description: Fast path to generate and validate a manifest-driven CLI workflow with Sonde.
 ---
 
 ## Purpose
 
-Get from zero to a reproducible Sonde workflow for AI-friendly CLI evaluation in a few commands.
+Get from zero to a reproducible manifest workflow in a few commands using the reference CLI.
+
+## Mental model
+
+- `generate` creates the standardized contract artifact (`sondage.manifest.json`).
+- `run` validates deterministic behavior against that local contract.
+- `score` outputs a compatibility report that can be compared across tools.
 
 ## Inputs
 
@@ -103,6 +109,6 @@ Expected output shape:
 
 ## See also
 
-- [CLI Reference](./cli-reference.mdx)
-- [Scoring 100 Guide](./scoring-100-guide.mdx)
-- [Troubleshooting](./troubleshooting.mdx)
+- [CLI Reference](/docs/reference-implementation/cli-reference)
+- [Scoring 100 Guide](/docs/evaluation/scoring-100-guide)
+- [Troubleshooting](/docs/help/troubleshooting)
