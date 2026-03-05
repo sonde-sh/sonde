@@ -6,6 +6,7 @@ const generateManifestMock = vi.fn();
 const runCommandMock = vi.fn();
 const executeManifestToolMock = vi.fn();
 const scoreManifestMock = vi.fn();
+const fetchMock = vi.fn();
 
 vi.mock("@sonde-sh/spec", () => ({ loadManifest: loadManifestMock }));
 vi.mock("@sonde-sh/generator", () => ({ generateManifest: generateManifestMock }));
@@ -68,7 +69,11 @@ describe("sonde CLI", () => {
     runCommandMock.mockReset();
     executeManifestToolMock.mockReset();
     scoreManifestMock.mockReset();
+    fetchMock.mockReset();
     loadManifestMock.mockResolvedValue({ ok: true, manifest });
+    delete process.env.SONDE_PUBLISH_URL;
+    delete process.env.SONDE_PUBLISH_TOKEN;
+    vi.stubGlobal("fetch", fetchMock);
   });
 
   it("runs generate command in json mode", async () => {
@@ -174,6 +179,62 @@ describe("sonde CLI", () => {
       command: "score",
       cli: "vercel",
       result: { score: 96 },
+    });
+  });
+
+  it("runs publish command and forwards normalized report", async () => {
+    const { runCli } = await import("../src/cli.js");
+    process.env.SONDE_PUBLISH_URL = "https://example.com/api/reports/publish";
+    process.env.SONDE_PUBLISH_TOKEN = "test-token";
+    runCommandMock.mockResolvedValue({ ok: true, command: "supabase", args: ["--help"] });
+    scoreManifestMock.mockResolvedValue({
+      manifestVersion: "1.0.0",
+      generatedAt: "2026-03-05T00:00:00.000Z",
+      total: 88,
+      jsonSupport: true,
+      interactivePrompts: false,
+      notes: "Deterministic output",
+    });
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 202,
+      text: async () => JSON.stringify({ ok: true, id: "report-1", status: "pending" }),
+    });
+    const { io, stdout, stderr } = createIo();
+
+    const exitCode = await runCli(["publish", "vercel", "--json"], io);
+
+    expect(exitCode).toBe(0);
+    expect(generateManifestMock).toHaveBeenCalledWith({ cli: "vercel" });
+    expect(runCommandMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://example.com/api/reports/publish",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          "content-type": "application/json",
+          "x-sonde-publish-token": "test-token",
+        }),
+      }),
+    );
+    expect(stderr).toEqual([]);
+    const firstLine = stdout.at(0);
+    expect(firstLine).toBeDefined();
+    expect(JSON.parse(firstLine ?? "")).toEqual({
+      ok: true,
+      apiVersion: "1.0.0",
+      command: "publish",
+      cli: "vercel",
+      result: expect.objectContaining({
+        publishUrl: "https://example.com/api/reports/publish",
+        response: { ok: true, id: "report-1", status: "pending" },
+        report: expect.objectContaining({
+          cli: "vercel",
+          score: 88,
+          schemaValid: true,
+        }),
+      }),
     });
   });
 

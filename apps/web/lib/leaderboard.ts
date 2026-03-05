@@ -1,5 +1,10 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
+import {
+  isBlobStorageConfigured,
+  loadApprovedReportDocuments,
+  type ReportDocument,
+} from "./reports-storage";
 
 export interface LeaderboardRow {
   cli: string;
@@ -25,6 +30,7 @@ interface ParsedRow {
 }
 
 const DEFAULT_REPORTS_DIR = path.resolve(process.cwd(), "..", "..", "reports");
+const BLOB_REPORTS_DIR = "vercel-blob://reports/approved";
 
 function isObject(value: unknown): value is RecordLike {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -182,39 +188,26 @@ export async function loadLeaderboardRows(): Promise<{
   rows: LeaderboardRow[];
   reportsDir: string;
 }> {
-  const reportsDir = DEFAULT_REPORTS_DIR;
-  let entries: string[] = [];
-
-  try {
-    const dirEntries = await readdir(reportsDir, { withFileTypes: true });
-    entries = dirEntries
-      .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
-      .map((entry) => entry.name)
-      .sort((a, b) => a.localeCompare(b));
-  } catch {
-    return { rows: [], reportsDir };
-  }
+  const { reportsDir, documents } = await loadReportDocuments();
 
   const rows: LeaderboardRow[] = [];
   const usedSlugs = new Set<string>();
 
-  for (const fileName of entries) {
-    const sourceFile = path.join(reportsDir, fileName);
+  for (const document of documents) {
     try {
-      const content = await readFile(sourceFile, "utf8");
-      const data = JSON.parse(content) as unknown;
-      const parsedRows = parseRows(data, fileName);
+      const data = JSON.parse(document.rawReport) as unknown;
+      const parsedRows = parseRows(data, document.sourceFile);
       for (const parsedRow of parsedRows) {
         const slug = createUniqueSlug(slugify(parsedRow.slugSeed), usedSlugs);
         rows.push({ ...parsedRow.row, slug });
       }
     } catch {
       const fallbackSlug = createUniqueSlug(
-        slugify(path.basename(fileName, ".json")),
+        slugify(path.basename(document.sourceFile, ".json")),
         usedSlugs
       );
       rows.push({
-        cli: path.basename(fileName, ".json"),
+        cli: path.basename(document.sourceFile, ".json"),
         score: "-",
         manifestVersion: "-",
         lastUpdatedAt: "-",
@@ -223,7 +216,7 @@ export async function loadLeaderboardRows(): Promise<{
         interactivePrompts: "-",
         notes: "Invalid JSON report file",
         sortScore: Number.NEGATIVE_INFINITY,
-        sourceFile: fileName,
+        sourceFile: document.sourceFile,
         slug: fallbackSlug,
       });
     }
@@ -253,15 +246,60 @@ export async function loadLeaderboardRowBySlug(
     return null;
   }
 
-  const sourcePath = path.join(reportsDir, row.sourceFile);
-  try {
-    const rawReport = await readFile(sourcePath, "utf8");
-    return { row, reportsDir, rawReport };
-  } catch {
+  const { documents } = await loadReportDocuments();
+  const document = documents.find((entry) => entry.sourceFile === row.sourceFile);
+  if (!document) {
     return { row, reportsDir, rawReport: "Unable to read report file." };
   }
+  return { row, reportsDir, rawReport: document.rawReport };
 }
 
 export function isPositive(value: string): boolean {
   return value.toLowerCase() === "yes";
+}
+
+async function loadReportDocuments(): Promise<{ reportsDir: string; documents: ReportDocument[] }> {
+  if (isBlobStorageConfigured()) {
+    try {
+      const blobDocuments = await loadApprovedReportDocuments();
+      if (blobDocuments.length > 0) {
+        return { reportsDir: BLOB_REPORTS_DIR, documents: blobDocuments };
+      }
+    } catch {
+      // Fallback to local report artifacts when storage is unavailable.
+    }
+  }
+
+  return {
+    reportsDir: DEFAULT_REPORTS_DIR,
+    documents: await loadReportDocumentsFromFilesystem(DEFAULT_REPORTS_DIR),
+  };
+}
+
+async function loadReportDocumentsFromFilesystem(reportsDir: string): Promise<ReportDocument[]> {
+  let entries: string[] = [];
+  try {
+    const dirEntries = await readdir(reportsDir, { withFileTypes: true });
+    entries = dirEntries
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+      .map((entry) => entry.name)
+      .sort((a, b) => a.localeCompare(b));
+  } catch {
+    return [];
+  }
+
+  const documents: ReportDocument[] = [];
+  for (const fileName of entries) {
+    const sourcePath = path.join(reportsDir, fileName);
+    try {
+      const rawReport = await readFile(sourcePath, "utf8");
+      documents.push({ sourceFile: fileName, rawReport });
+    } catch {
+      documents.push({
+        sourceFile: fileName,
+        rawReport: "Unable to read report file.",
+      });
+    }
+  }
+  return documents;
 }

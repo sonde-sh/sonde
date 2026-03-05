@@ -2,6 +2,7 @@ export { runCli, parseArgs } from "./cli.js";
 export {
   handleGenerate,
   handleManifest,
+  handlePublish,
   handleRun,
   handleScore,
   loadManifest,

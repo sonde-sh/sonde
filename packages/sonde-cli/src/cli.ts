@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import {
   handleGenerate,
   handleManifest,
+  handlePublish,
   handleRun,
   handleScore,
   loadManifest,
@@ -15,7 +16,7 @@ import { runServeLoop } from "./serve.js";
 import { SONDE_JSON_API_VERSION } from "./types.js";
 import type { CliIo, JsonFailure } from "./types.js";
 
-const COMMANDS = ["generate", "manifest", "run", "serve", "score"] as const;
+const COMMANDS = ["generate", "manifest", "run", "serve", "score", "publish"] as const;
 const HELP_FLAGS = new Set(["--help", "-h"]);
 const VERSION_FLAGS = new Set(["--version", "-v"]);
 
@@ -105,6 +106,18 @@ export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promis
         ok: true,
         apiVersion: SONDE_JSON_API_VERSION,
         command: "run",
+        cli: parsed.cli,
+        result,
+      });
+      return 0;
+    }
+
+    if (parsed.command === "publish") {
+      const result = await handlePublish(context);
+      writeResult(io, parsed.json, {
+        ok: true,
+        apiVersion: SONDE_JSON_API_VERSION,
+        command: "publish",
         cli: parsed.cli,
         result,
       });
@@ -224,6 +237,7 @@ function getUsage(command?: SondeCommand): string {
       "  manifest          Print Sonde's own Sondage manifest",
       "  run <cli>         Validate deterministic behavior from local manifest",
       "  score <cli>       Score manifest-aligned automation reliability",
+      "  publish <cli>     Publish score report to Sonde web endpoint",
       "  serve             Expose manifest tools over JSON line protocol",
       "",
       "Options:",

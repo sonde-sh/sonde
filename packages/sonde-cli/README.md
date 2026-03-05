@@ -31,6 +31,7 @@ sonde generate <cli> [--json]
 sonde manifest [--json]
 sonde run <cli> [--json]
 sonde score <cli> [--json]
+sonde publish <cli> [--json]
 sonde serve [--json]
 ```
 

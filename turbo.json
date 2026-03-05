@@ -1,5 +1,10 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
+  "globalEnv": [
+    "BLOB_READ_WRITE_TOKEN",
+    "SONDE_PUBLISH_TOKEN",
+    "SONDE_REPORTS_ADMIN_TOKEN"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

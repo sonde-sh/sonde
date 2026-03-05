@@ -72,6 +72,16 @@ export function createSondeSelfManifest(generatedAt = new Date().toISOString()):
         mayPrompt: false,
       },
       {
+        name: "publish",
+        path: ["publish"],
+        description: "Publish a Sonde report to the configured web endpoint",
+        usage: "sonde publish <cli> [--json]",
+        options: [],
+        subcommands: [],
+        supportsJson: true,
+        mayPrompt: false,
+      },
+      {
         name: "serve",
         path: ["serve"],
         description: "Expose manifest tools over JSON line protocol",

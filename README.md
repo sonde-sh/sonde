@@ -47,6 +47,7 @@ sonde generate <cli> [--json]
 sonde manifest [--json]
 sonde run <cli> [--json]
 sonde score <cli> [--json]
+sonde publish <cli> [--json]
 sonde serve [--json]
 ```
 
@@ -107,3 +108,18 @@ pnpm release
 ```
 
 Release PRs and npm publish are automated via GitHub Actions.
+
+## Report publishing
+
+Developers can publish generated reports to the web app when it exposes publish APIs.
+
+Required environment variables for `sonde publish`:
+
+- `SONDE_PUBLISH_URL` (example: `https://your-site.vercel.app/api/reports/publish`)
+- `SONDE_PUBLISH_TOKEN` (shared token expected by the publish API)
+
+Web app environment variables for moderation:
+
+- `BLOB_READ_WRITE_TOKEN` (Vercel Blob store token)
+- `SONDE_PUBLISH_TOKEN` (same shared publish token)
+- `SONDE_REPORTS_ADMIN_TOKEN` (maintainer-only token for approvals)
