@@ -1,12 +1,13 @@
 ---
-title: Manifest Generation Guide
-description: Define and validate scenario manifests that power Sonde runners and downstream report tooling.
+title: Generate a Sondage Manifest
+description: Define and validate the manifest contract that powers Sonde runners and downstream report tooling.
 ---
 
 ## Purpose
 
-A normalized artifact describing CLI identity, scenarios, expected behavior, and
-scoring weights.
+A simple, machine-readable contract that describes CLI identity, scenarios,
+expected behavior, and scoring weights.
+It is designed for AI-native CLIs and intended to be reusable as a shared standard.
 
 ## Inputs
 
@@ -15,7 +16,7 @@ scoring weights.
 
 ## Outputs
 
-- `sondage.manifest.json` with validated STM structure.
+- `sondage.manifest.json` with validated manifest structure.
 - Global options and command-level options for runtime preference selection.
 
 ## Versioning and compatibility
@@ -29,7 +30,7 @@ scoring weights.
 
 1. Probe `<cli> --help`.
 2. Probe each discovered subcommand with `--help`.
-3. Generate STM manifest and write `sondage.manifest.json`.
+3. Generate the manifest contract and write `sondage.manifest.json`.
 4. Validate manifest on load before `run`, `score`, or `serve`.
 
 ## Deterministic examples
