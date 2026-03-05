@@ -1,4 +1,5 @@
 import type { CliIo, JsonFailure, JsonSuccess } from "./types.js";
+import { SONDE_JSON_API_VERSION } from "./types.js";
 
 export class CliError extends Error {
   public constructor(message: string) {
@@ -13,7 +14,12 @@ export function writeResult<T>(
   payload: JsonSuccess<T>,
 ): void {
   if (json) {
-    io.writeStdout(JSON.stringify(payload));
+    io.writeStdout(
+      JSON.stringify({
+        ...payload,
+        apiVersion: SONDE_JSON_API_VERSION,
+      }),
+    );
     return;
   }
 
@@ -23,7 +29,12 @@ export function writeResult<T>(
 
 export function writeError(io: CliIo, json: boolean, payload: JsonFailure): void {
   if (json) {
-    io.writeStderr(JSON.stringify(payload));
+    io.writeStderr(
+      JSON.stringify({
+        ...payload,
+        apiVersion: SONDE_JSON_API_VERSION,
+      }),
+    );
     return;
   }
 

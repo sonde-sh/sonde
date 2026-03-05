@@ -20,6 +20,7 @@ It is derived from CLI implementation behavior.
 - Human-readable text by default.
 - JSON payloads for command success/failure when `--json` is active.
 - `serve` responses are always JSON lines.
+- JSON command payloads include `apiVersion`.
 
 ## Commands
 
@@ -64,7 +65,7 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 - Requires local `sondage.manifest.json`.
 - Supports methods: `tools/list`, `tools/call`.
 - Announces readiness:
-  - `--json`: `{"ok":true,"command":"serve","status":"ready"}`
+  - `--json`: `{"ok":true,"command":"serve","apiVersion":"1.0.0","protocolVersion":"1.0.0","status":"ready"}`
   - default: `serve ready`
 - Each input line is parsed as JSON request.
 - Invalid JSON lines return structured error with `id: null`.
@@ -91,6 +92,14 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 - Extra positional args fail (`Unexpected extra arguments for '<command>'`).
 - Unknown flags are not special-cased and may be treated as unexpected extra args.
 
+## Versioning and compatibility
+
+- Manifest `version` is semantic versioning and must follow `major.minor.patch`.
+- Current supported manifest major version is `1`; other major versions return `UNSUPPORTED_VERSION`.
+- JSON command payloads include `apiVersion` so consumers can parse envelopes safely.
+- Score reports include `reportVersion` and `manifestVersion`.
+- Serve protocol messages include `protocolVersion`.
+
 ## Deterministic examples
 
 ### JSON success: generate
@@ -98,6 +107,7 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 ```json
 {
   "ok": true,
+  "apiVersion": "1.0.0",
   "command": "generate",
   "cli": "vercel",
   "result": {
@@ -111,6 +121,7 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 ```json
 {
   "ok": true,
+  "apiVersion": "1.0.0",
   "command": "run",
   "cli": "supabase",
   "result": {
@@ -124,10 +135,13 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 ```json
 {
   "ok": true,
+  "apiVersion": "1.0.0",
   "command": "score",
   "cli": "vercel",
   "result": {
-    "score": 96
+    "reportVersion": "1.0.0",
+    "manifestVersion": "1.0.0",
+    "total": 96
   }
 }
 ```
@@ -137,6 +151,7 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 ```json
 {
   "ok": false,
+  "apiVersion": "1.0.0",
   "error": {
     "message": "Usage: sonde <command> [options]"
   }
@@ -148,6 +163,7 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 ```json
 {
   "ok": false,
+  "apiVersion": "1.0.0",
   "command": "run",
   "cli": "supabase",
   "error": {

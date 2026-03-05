@@ -38,10 +38,13 @@ Expected output shape:
 ```json
 {
   "ok": true,
+  "apiVersion": "1.0.0",
   "command": "generate",
   "cli": "vercel",
   "result": {
-    "manifest": {},
+    "manifest": {
+      "version": "1.0.0"
+    },
     "outputPath": "sondage.manifest.json",
     "commandCount": 0
   }
@@ -59,6 +62,7 @@ Expected output shape:
 ```json
 {
   "ok": true,
+  "apiVersion": "1.0.0",
   "command": "run",
   "cli": "vercel",
   "result": {
@@ -79,10 +83,13 @@ Expected output shape:
 ```json
 {
   "ok": true,
+  "apiVersion": "1.0.0",
   "command": "score",
   "cli": "vercel",
   "result": {
-    "score": 100
+    "reportVersion": "1.0.0",
+    "manifestVersion": "1.0.0",
+    "total": 100
   }
 }
 ```
@@ -92,6 +99,7 @@ Expected output shape:
 - If target CLI is missing, generation fails with execution error.
 - `run` and `score` require `sondage.manifest.json` in current directory.
 - If CLI output looks interactive, run quality decreases and score may drop.
+- Manifest loading fails with `UNSUPPORTED_VERSION` when manifest major version is not supported.
 
 ## See also
 

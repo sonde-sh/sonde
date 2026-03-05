@@ -28,7 +28,7 @@ describe("sonde binary", () => {
       manifestPath,
       JSON.stringify(
         {
-          version: "1",
+          version: "1.0.0",
           generatedAt: "2026-01-01T00:00:00.000Z",
           cli: {
             name: "node",
@@ -58,6 +58,7 @@ describe("sonde binary", () => {
       expect(parsed).toEqual(
         expect.objectContaining({
           ok: true,
+          apiVersion: "1.0.0",
           command: "run",
           cli: "ignored-cli",
         }),

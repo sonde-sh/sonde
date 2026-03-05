@@ -78,6 +78,6 @@ Options:
     const written = await readFile(outputPath, "utf8");
 
     expect(written.startsWith("{\n")).toBe(true);
-    expect(written.includes('"version": "1"')).toBe(true);
+    expect(written.includes('"version": "1.0.0"')).toBe(true);
   });
 });

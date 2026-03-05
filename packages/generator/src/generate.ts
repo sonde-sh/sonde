@@ -1,6 +1,6 @@
 import { execa } from "execa";
 
-import type { StmManifestV1 } from "@sonde-sh/spec";
+import type { StmManifest } from "@sonde-sh/spec";
 
 import { parseHelpText } from "./help-parser.js";
 import { generateManifestFromHelp } from "./manifest-generator.js";
@@ -12,7 +12,7 @@ export interface GenerateManifestInput {
 }
 
 export interface GenerateManifestResult {
-  manifest: StmManifestV1;
+  manifest: StmManifest;
   outputPath: string;
   commandCount: number;
 }

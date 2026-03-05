@@ -2,7 +2,7 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { validateManifest } from "@sonde-sh/spec";
-import type { StmManifestV1 } from "@sonde-sh/spec";
+import type { StmManifest } from "@sonde-sh/spec";
 
 export const DEFAULT_OUTPUT_FILE = "sondage.manifest.json";
 
@@ -26,14 +26,14 @@ function stableObject(input: unknown): unknown {
   return input;
 }
 
-export function toStableManifestJson(manifest: StmManifestV1): string {
+export function toStableManifestJson(manifest: StmManifest): string {
   const validated = validateManifest(manifest);
   const sorted = stableObject(validated);
   return `${JSON.stringify(sorted, null, 2)}\n`;
 }
 
 export async function writeManifestFile(
-  manifest: StmManifestV1,
+  manifest: StmManifest,
   outputPath = DEFAULT_OUTPUT_FILE,
 ): Promise<string> {
   const absolutePath = path.resolve(outputPath);

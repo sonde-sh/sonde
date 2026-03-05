@@ -1,4 +1,5 @@
 import { executeManifestTool } from "@sonde-sh/runtime";
+import { SONDE_SERVE_PROTOCOL_VERSION } from "./types.js";
 import type {
   CliIo,
   JsonSchema,
@@ -19,12 +20,14 @@ export interface ServeRequest {
 export interface ServeSuccess<T> {
   id: string | number;
   ok: true;
+  protocolVersion: string;
   result: T;
 }
 
 export interface ServeFailure {
   id: string | number | null;
   ok: false;
+  protocolVersion: string;
   error: {
     message: string;
   };
@@ -48,6 +51,7 @@ export async function handleServeRequest(
     return {
       id: request.id,
       ok: true,
+      protocolVersion: SONDE_SERVE_PROTOCOL_VERSION,
       result: listTools(manifest),
     };
   }
@@ -57,6 +61,7 @@ export async function handleServeRequest(
     return {
       id: request.id,
       ok: false,
+      protocolVersion: SONDE_SERVE_PROTOCOL_VERSION,
       error: {
         message: "Missing tool name in tools/call request",
       },
@@ -68,6 +73,7 @@ export async function handleServeRequest(
     return {
       id: request.id,
       ok: false,
+      protocolVersion: SONDE_SERVE_PROTOCOL_VERSION,
       error: {
         message: `Unknown tool '${toolName}'`,
       },
@@ -83,6 +89,7 @@ export async function handleServeRequest(
   return {
     id: request.id,
     ok: true,
+    protocolVersion: SONDE_SERVE_PROTOCOL_VERSION,
     result: {
       tool: toolName,
       output,
@@ -96,7 +103,15 @@ export async function runServeLoop(
   json: boolean,
 ): Promise<void> {
   if (json) {
-    io.writeStdout(JSON.stringify({ ok: true, command: "serve", status: "ready" }));
+    io.writeStdout(
+      JSON.stringify({
+        ok: true,
+        command: "serve",
+        apiVersion: SONDE_SERVE_PROTOCOL_VERSION,
+        protocolVersion: SONDE_SERVE_PROTOCOL_VERSION,
+        status: "ready",
+      }),
+    );
   } else {
     io.writeStdout("serve ready");
   }
@@ -114,6 +129,7 @@ export async function runServeLoop(
       const malformed: ServeFailure = {
         id: null,
         ok: false,
+        protocolVersion: SONDE_SERVE_PROTOCOL_VERSION,
         error: {
           message: "Invalid JSON request",
         },
@@ -130,6 +146,7 @@ export async function runServeLoop(
       const response: ServeFailure = {
         id: request.id,
         ok: false,
+        protocolVersion: SONDE_SERVE_PROTOCOL_VERSION,
         error: {
           message,
         },

@@ -49,6 +49,14 @@ For complete behavior, outputs, and edge cases, use the canonical [CLI reference
 - `@sonde-sh/runtime`: deterministic command execution and tool execution
 - `@sonde-sh/scoring`: weighted (0-100) scoring engine for CLI behavior
 
+## Versioning and compatibility
+
+- Manifest contract uses semantic versioning in `sondage.manifest.json` via `version` (for example `1.0.0`).
+- Current supported manifest major version is `1`; loading a different major returns `UNSUPPORTED_VERSION`.
+- JSON command envelopes include `apiVersion` for `generate`, `run`, and `score`.
+- `sonde serve --json` includes `protocolVersion` in readiness and per-request responses.
+- Score reports include both `reportVersion` and `manifestVersion` to make downstream compatibility explicit.
+
 ## Local development
 
 Prerequisites:

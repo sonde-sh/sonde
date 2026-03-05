@@ -14,7 +14,8 @@ export type {
   LoadManifestSuccess,
   StmCliMeta,
   StmCommand,
+  StmManifest,
   StmManifestV1,
+  StmManifestVersion,
   StmOption,
-  StmVersion,
 } from "./types.js";

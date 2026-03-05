@@ -1,5 +1,5 @@
 import { execa } from "execa";
-import type { StmCommand, StmManifestV1, StmOption } from "@sonde-sh/spec";
+import type { StmCommand, StmManifest, StmOption } from "@sonde-sh/spec";
 
 import { buildPreferredArgs, selectPreferredFlags } from "./flags.js";
 
@@ -43,7 +43,7 @@ export interface RunResult {
 }
 
 export interface ExecuteManifestToolOptions {
-  manifest: StmManifestV1;
+  manifest: StmManifest;
   toolName: string;
   input: unknown;
   cwd?: string;

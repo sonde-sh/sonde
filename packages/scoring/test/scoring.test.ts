@@ -40,7 +40,7 @@ describe("scoring", () => {
 
     const report = scoreManifest({
       manifest: {
-        version: "1",
+        version: "1.0.0",
         generatedAt: "2026-01-01T00:00:00.000Z",
         cli: { name: "mycli", binary: "mycli" },
         globalOptions: [{ long: "--help", takesValue: false }],
@@ -60,6 +60,8 @@ describe("scoring", () => {
 
     expect(report.total).toBeGreaterThanOrEqual(0);
     expect(report.total).toBeLessThanOrEqual(100);
+    expect(report.reportVersion).toBe("1.0.0");
+    expect(report.manifestVersion).toBe("1.0.0");
     expect(report.metrics).toHaveLength(5);
   });
 

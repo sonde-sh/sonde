@@ -1,4 +1,4 @@
-export type StmVersion = "1";
+export type StmManifestVersion = string;
 
 export interface StmOption {
   long: string;
@@ -25,28 +25,31 @@ export interface StmCliMeta {
   description?: string;
 }
 
-export interface StmManifestV1 {
+export interface StmManifest {
   $schema?: string;
-  version: StmVersion;
+  version: StmManifestVersion;
   generatedAt: string;
   cli: StmCliMeta;
   globalOptions: StmOption[];
   commands: StmCommand[];
 }
 
+export type StmManifestV1 = StmManifest;
+
 export interface DeterministicError {
   code:
     | "MISSING_FILE"
     | "READ_FAILED"
     | "INVALID_JSON"
-    | "VALIDATION_FAILED";
+    | "VALIDATION_FAILED"
+    | "UNSUPPORTED_VERSION";
   message: string;
   details?: unknown;
 }
 
 export interface LoadManifestSuccess {
   ok: true;
-  manifest: StmManifestV1;
+  manifest: StmManifest;
 }
 
 export interface LoadManifestFailure {

@@ -1,4 +1,7 @@
-import type { StmManifestV1 } from "@sonde-sh/spec";
+import type { StmManifest } from "@sonde-sh/spec";
+
+export const SONDE_JSON_API_VERSION = "1.0.0";
+export const SONDE_SERVE_PROTOCOL_VERSION = "1.0.0";
 
 export interface JsonSchema {
   type: "object";
@@ -12,7 +15,7 @@ export interface JsonSchemaProperty {
   description?: string;
 }
 
-export type SondeManifest = StmManifestV1;
+export type SondeManifest = StmManifest;
 
 export interface CliIo {
   writeStdout: (line: string) => void;
@@ -28,6 +31,7 @@ export interface CommandContext {
 
 export interface JsonSuccess<T> {
   ok: true;
+  apiVersion: string;
   command: "generate" | "run" | "score" | "serve";
   cli?: string;
   result: T;
@@ -35,6 +39,7 @@ export interface JsonSuccess<T> {
 
 export interface JsonFailure {
   ok: false;
+  apiVersion: string;
   command?: "generate" | "run" | "score" | "serve";
   cli?: string;
   error: {

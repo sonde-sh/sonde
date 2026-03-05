@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import type { StmManifestV1, StmOption } from "./types.js";
+import type { StmManifest, StmOption } from "./types.js";
+
+const SEMVER_PATTERN =
+  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/;
 
 export const stmOptionSchema = z.object({
   long: z.string().min(2),
@@ -23,7 +26,9 @@ export const stmCommandSchema = z.object({
 
 export const stmManifestV1Schema = z.object({
   $schema: z.string().optional(),
-  version: z.literal("1"),
+  version: z.string().regex(SEMVER_PATTERN, {
+    message: "Manifest version must be a valid semantic version (x.y.z).",
+  }),
   generatedAt: z.string().datetime({ offset: true }),
   cli: z.object({
     name: z.string().min(1),
@@ -41,13 +46,17 @@ export interface JsonSchemaObject {
 export const manifestJsonSchema: JsonSchemaObject = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
   $id: "https://sonde.dev/schemas/stm-manifest-v1.schema.json",
-  title: "STM Manifest v1",
+  title: "STM Manifest (major v1)",
   type: "object",
   required: ["version", "generatedAt", "cli", "globalOptions", "commands"],
   additionalProperties: false,
   properties: {
     $schema: { type: "string" },
-    version: { const: "1" },
+    version: {
+      type: "string",
+      pattern:
+        "^(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)(?:-((?:0|[1-9]\\\\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\\\.(?:0|[1-9]\\\\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\\\+([0-9A-Za-z-]+(?:\\\\.[0-9A-Za-z-]+)*))?$",
+    },
     generatedAt: { type: "string", format: "date-time" },
     cli: {
       type: "object",
@@ -116,7 +125,7 @@ export const manifestJsonSchema: JsonSchemaObject = {
   },
 };
 
-export function validateManifest(manifest: unknown): StmManifestV1 {
+export function validateManifest(manifest: unknown): StmManifest {
   return stmManifestV1Schema.parse(manifest);
 }
 

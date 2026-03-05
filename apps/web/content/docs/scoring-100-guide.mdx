@@ -49,9 +49,12 @@ Target:
 ```json
 {
   "ok": true,
+  "apiVersion": "1.0.0",
   "command": "score",
   "result": {
-    "score": 100
+    "reportVersion": "1.0.0",
+    "manifestVersion": "1.0.0",
+    "total": 100
   }
 }
 ```
@@ -69,6 +72,11 @@ Target:
 - Add explicit non-interactive mode (`--non-interactive`, `--yes`, etc.).
 - Keep `--help` and command metadata deterministic.
 - Avoid timestamps/random values in default output paths checked by Sonde.
+
+## Versioning and compatibility
+
+- Ensure manifest `version` remains on supported major version `1` while upgrading Sonde.
+- Use report fields `reportVersion` and `manifestVersion` to branch parsing logic in downstream pipelines.
 
 ## Edge cases
 

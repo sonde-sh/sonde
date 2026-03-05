@@ -6,6 +6,7 @@ import { handleGenerate, handleRun, handleScore, loadManifest } from "./command-
 import { createNodeIo } from "./io.js";
 import { CliError, writeError, writeResult } from "./output.js";
 import { runServeLoop } from "./serve.js";
+import { SONDE_JSON_API_VERSION } from "./types.js";
 import type { CliIo, JsonFailure } from "./types.js";
 
 const COMMANDS = ["generate", "run", "serve", "score"] as const;
@@ -31,6 +32,7 @@ export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promis
     const message = error instanceof Error ? error.message : "Invalid CLI arguments";
     writeError(io, argv.includes("--json"), {
       ok: false,
+      apiVersion: SONDE_JSON_API_VERSION,
       error: { message },
     });
     return 1;
@@ -72,6 +74,7 @@ export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promis
       const result = await handleGenerate(context);
       writeResult(io, parsed.json, {
         ok: true,
+        apiVersion: SONDE_JSON_API_VERSION,
         command: "generate",
         cli: parsed.cli,
         result,
@@ -83,6 +86,7 @@ export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promis
       const result = await handleRun(context);
       writeResult(io, parsed.json, {
         ok: true,
+        apiVersion: SONDE_JSON_API_VERSION,
         command: "run",
         cli: parsed.cli,
         result,
@@ -93,6 +97,7 @@ export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promis
     const result = await handleScore(context);
     writeResult(io, parsed.json, {
       ok: true,
+      apiVersion: SONDE_JSON_API_VERSION,
       command: "score",
       cli: parsed.cli,
       result,
@@ -102,6 +107,7 @@ export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promis
     const message = error instanceof Error ? error.message : "Unknown command error";
     const payload: JsonFailure = {
       ok: false,
+      apiVersion: SONDE_JSON_API_VERSION,
       command: parsed.command,
       cli: parsed.cli,
       error: {

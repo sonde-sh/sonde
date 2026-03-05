@@ -5,9 +5,17 @@ import { stmManifestV1Schema } from "./schema.js";
 import type { DeterministicError, LoadManifestResult } from "./types.js";
 
 const DEFAULT_MANIFEST_FILE = "sondage.manifest.json";
+const SUPPORTED_MANIFEST_MAJOR = 1;
+const SEMVER_PATTERN =
+  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/;
 
 function failure(error: DeterministicError): LoadManifestResult {
   return { ok: false, error };
+}
+
+function getManifestMajor(version: string): number {
+  const [majorValue] = version.split(".");
+  return Number.parseInt(majorValue ?? "", 10);
 }
 
 export async function loadManifest(
@@ -47,6 +55,24 @@ export async function loadManifest(
     });
   }
 
+  const manifestVersion =
+    parsedJson && typeof parsedJson === "object" && !Array.isArray(parsedJson)
+      ? (parsedJson as Record<string, unknown>).version
+      : undefined;
+  if (typeof manifestVersion === "string" && SEMVER_PATTERN.test(manifestVersion)) {
+    const major = getManifestMajor(manifestVersion);
+    if (major !== SUPPORTED_MANIFEST_MAJOR) {
+      return failure({
+        code: "UNSUPPORTED_VERSION",
+        message: `Manifest major version ${String(major)} is not supported`,
+        details: {
+          received: manifestVersion,
+          supportedMajor: SUPPORTED_MANIFEST_MAJOR,
+        },
+      });
+    }
+  }
+
   const validationResult = stmManifestV1Schema.safeParse(parsedJson);
   if (!validationResult.success) {
     const details = validationResult.error.issues.map((issue) => ({
@@ -55,7 +81,7 @@ export async function loadManifest(
     }));
     return failure({
       code: "VALIDATION_FAILED",
-      message: "Manifest JSON does not match STM v1 schema",
+      message: "Manifest JSON does not match the Sonde manifest schema",
       details,
     });
   }

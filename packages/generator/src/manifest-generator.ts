@@ -1,4 +1,4 @@
-import type { StmCommand, StmManifestV1 } from "@sonde-sh/spec";
+import type { StmCommand, StmManifest } from "@sonde-sh/spec";
 
 import { parseHelpText } from "./help-parser.js";
 
@@ -38,7 +38,7 @@ function normalizeCommandName(commandPath: string): string {
 
 export function generateManifestFromHelp(
   input: ManifestGeneratorInput,
-): StmManifestV1 {
+): StmManifest {
   const parsedRoot = parseHelpText(input.help.root);
   const commandKeys = Object.keys(input.help.commands).sort((left, right) =>
     left.localeCompare(right),
@@ -67,7 +67,7 @@ export function generateManifestFromHelp(
 
   return {
     $schema: "https://sonde.dev/schemas/stm-manifest-v1.schema.json",
-    version: "1",
+    version: "1.0.0",
     generatedAt: input.generatedAt ?? "1970-01-01T00:00:00.000Z",
     cli: {
       name: input.cliName,

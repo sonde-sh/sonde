@@ -1,5 +1,5 @@
 import type { RunResult } from "@sonde-sh/runtime";
-import type { StmManifestV1, StmOption } from "@sonde-sh/spec";
+import type { StmManifest, StmOption } from "@sonde-sh/spec";
 
 import { ANALYZERS, type AnalyzerEntry } from "./analyzers.js";
 
@@ -20,11 +20,13 @@ export interface MetricReport {
 }
 
 export interface ScoreInput {
-  manifest: StmManifestV1;
+  manifest: StmManifest;
   runResults?: RunResult[];
 }
 
 export interface ScoreReport {
+  reportVersion: "1.0.0";
+  manifestVersion: string;
   cli: string;
   total: number;
   grade: "A" | "B" | "C" | "D" | "F";
@@ -257,6 +259,8 @@ export function scoreManifest(input: ScoreInput): ScoreReport {
   );
 
   return {
+    reportVersion: "1.0.0",
+    manifestVersion: input.manifest.version,
     cli: input.manifest.cli.name,
     total,
     grade: getGrade(total),

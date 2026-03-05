@@ -18,6 +18,13 @@ scoring weights.
 - `sondage.manifest.json` with validated STM structure.
 - Global options and command-level options for runtime preference selection.
 
+## Versioning and compatibility
+
+- Manifest `version` is strict semantic versioning (`major.minor.patch`).
+- Sonde currently supports manifest major version `1` (for example `1.0.0`, `1.1.0`).
+- A manifest with unsupported major version fails loading with `UNSUPPORTED_VERSION`.
+- Additive, backward-compatible fields should increment `minor`; breaking changes must increment `major`.
+
 ## Key flow
 
 1. Probe `<cli> --help`.
@@ -38,9 +45,13 @@ Typical JSON response shape:
 ```json
 {
   "ok": true,
+  "apiVersion": "1.0.0",
   "command": "generate",
   "cli": "vercel",
   "result": {
+    "manifest": {
+      "version": "1.0.0"
+    },
     "outputPath": "sondage.manifest.json",
     "commandCount": 0
   }

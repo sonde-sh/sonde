@@ -16,7 +16,7 @@ vi.mock("@sonde-sh/runtime", () => ({
 vi.mock("@sonde-sh/scoring", () => ({ scoreManifest: scoreManifestMock }));
 
 const manifest: SondeManifest = {
-  version: "1",
+  version: "1.0.0",
   generatedAt: "2026-01-01T00:00:00.000Z",
   cli: {
     name: "sonde-test",
@@ -87,6 +87,7 @@ describe("sonde CLI", () => {
     expect(firstLine).toBeDefined();
     expect(JSON.parse(firstLine ?? "")).toEqual({
       ok: true,
+      apiVersion: "1.0.0",
       command: "generate",
       cli: "vercel",
       result: { commandCount: 3 },
@@ -110,6 +111,7 @@ describe("sonde CLI", () => {
     expect(firstLine).toBeDefined();
     expect(JSON.parse(firstLine ?? "")).toEqual({
       ok: true,
+      apiVersion: "1.0.0",
       command: "run",
       cli: "supabase",
       result: { status: "ok" },
@@ -143,6 +145,7 @@ describe("sonde CLI", () => {
     expect(firstLine).toBeDefined();
     expect(JSON.parse(firstLine ?? "")).toEqual({
       ok: true,
+      apiVersion: "1.0.0",
       command: "score",
       cli: "vercel",
       result: { score: 96 },
@@ -175,6 +178,8 @@ describe("sonde CLI", () => {
     expect(readyLine).toBeDefined();
     expect(JSON.parse(readyLine ?? "")).toEqual({
       ok: true,
+      apiVersion: "1.0.0",
+      protocolVersion: "1.0.0",
       command: "serve",
       status: "ready",
     });
@@ -184,6 +189,7 @@ describe("sonde CLI", () => {
     expect(JSON.parse(toolListLine ?? "")).toEqual({
       id: "1",
       ok: true,
+      protocolVersion: "1.0.0",
       result: {
         tools: [
           {
@@ -214,6 +220,7 @@ describe("sonde CLI", () => {
     expect(JSON.parse(deployLine ?? "")).toEqual({
       id: "2",
       ok: true,
+      protocolVersion: "1.0.0",
       result: {
         tool: "deploy",
         output: { deployed: true },
@@ -225,6 +232,7 @@ describe("sonde CLI", () => {
     expect(JSON.parse(deniedLine ?? "")).toEqual({
       id: "3",
       ok: false,
+      protocolVersion: "1.0.0",
       error: {
         message: "Unknown tool 'dangerous-shell'",
       },
@@ -243,6 +251,7 @@ describe("sonde CLI", () => {
     expect(firstError).toBeDefined();
     expect(JSON.parse(firstError ?? "")).toEqual({
       ok: false,
+      apiVersion: "1.0.0",
       error: {
         message: expect.stringContaining("Usage: sonde"),
       },
@@ -260,6 +269,7 @@ describe("sonde CLI", () => {
     expect(firstError).toBeDefined();
     expect(JSON.parse(firstError ?? "")).toEqual({
       ok: false,
+      apiVersion: "1.0.0",
       error: {
         message: "Usage: sonde run <cli> [--json]",
       },
@@ -277,6 +287,7 @@ describe("sonde CLI", () => {
     expect(firstError).toBeDefined();
     expect(JSON.parse(firstError ?? "")).toEqual({
       ok: false,
+      apiVersion: "1.0.0",
       error: {
         message: "Unexpected extra arguments for 'generate'",
       },
@@ -325,6 +336,7 @@ describe("sonde CLI", () => {
     expect(firstError).toBeDefined();
     expect(JSON.parse(firstError ?? "")).toEqual({
       ok: false,
+      apiVersion: "1.0.0",
       command: "run",
       cli: "supabase",
       error: {
@@ -346,6 +358,7 @@ describe("sonde CLI", () => {
     expect(JSON.parse(malformed ?? "")).toEqual({
       id: null,
       ok: false,
+      protocolVersion: "1.0.0",
       error: {
         message: "Invalid JSON request",
       },
