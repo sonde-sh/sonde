@@ -16,7 +16,7 @@
     "lint": "turbo run lint --parallel --log-order grouped",
     "test": "turbo run test --parallel --log-order grouped",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types --parallel --log-order grouped",
+    "check-types": "turbo run check-types --log-order grouped",
     "changeset": "changeset",
     "changeset:status": "changeset status --verbose",
     "version-packages": "changeset version",
