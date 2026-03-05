@@ -8,6 +8,12 @@ description: Canonical command behavior for the Sonde reference CLI, including o
 Use this page as the authoritative command contract for the Sonde reference CLI (`@sonde-sh/sonde`).
 For normative contract semantics, read [Sonde](/docs/foundations/sonde) and [Manifest](/docs/foundations/sondage-manifest) first.
 
+The reference CLI is intentionally focused on three outcomes:
+
+1. Generate manifest contracts from existing CLIs.
+2. Evaluate CLIs against those contracts and return a report.
+3. Stay self-compliant by exposing Sonde's own manifest contract.
+
 ## Inputs
 
 - CLI arguments (`<command>`, `<cli>`, flags).
@@ -46,7 +52,7 @@ Print Sonde's own Sondage manifest as a reference implementation payload.
 
 ### `sonde run <cli> [--json]`
 
-Run deterministic execution checks using local manifest settings.
+Run deterministic diagnostic checks using local manifest settings.
 
 #### Behavior notes
 
@@ -57,14 +63,24 @@ Run deterministic execution checks using local manifest settings.
 
 ### `sonde score <cli> [--json]`
 
-Compute a weighted score (0-100) using manifest and two deterministic runs.
+Evaluate a CLI and return the canonical weighted report (0-100).
 
 #### Behavior notes
 
 - Requires local `sondage.manifest.json`.
 - Performs two runs of `manifest.cli.binary --help`.
-- Uses scoring engine over both run results.
+- Uses scoring engine over both run results and returns the full evaluation report payload.
 - `<cli>` is validated and echoed in output, but command execution uses `manifest.cli.binary`.
+
+### `sonde publish <cli> [--json]`
+
+Optionally submit an evaluation report to a Sonde web endpoint.
+
+#### Behavior notes
+
+- Requires `SONDE_PUBLISH_URL` and `SONDE_PUBLISH_TOKEN`.
+- Runs `score` semantics and posts a normalized payload plus full report details.
+- Intended as an optional follow-up step after local evaluation.
 
 ### `sonde serve [--json]`
 
@@ -73,6 +89,7 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 #### Behavior notes
 
 - Requires local `sondage.manifest.json`.
+- This is an integration capability, not required for core Sonde evaluation flow.
 - Supports methods: `tools/list`, `tools/call`.
 - Announces readiness:
   - `--json`: `{"ok":true,"command":"serve","apiVersion":"1.0.0","protocolVersion":"1.0.0","status":"ready"}`
@@ -98,7 +115,7 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
   - `sonde <command> [options]`
   - `sonde manifest [--json]`
   - `sonde serve [--json]`
-  - `sonde <generate|run|score> <cli> [--json]`
+  - `sonde <generate|run|score|publish> <cli> [--json]`
 - Unknown commands fail with usage error.
 - Extra positional args fail (`Unexpected extra arguments for '<command>'`).
 - Unknown flags are not special-cased and may be treated as unexpected extra args.

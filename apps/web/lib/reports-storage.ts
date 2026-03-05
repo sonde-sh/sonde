@@ -12,6 +12,7 @@ export const publishReportSchema = z.object({
   notes: z.string().trim().min(1),
   publisherId: z.string().trim().min(1).optional(),
   sourceVersion: z.string().trim().min(1).optional(),
+  report: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type PublishReportInput = z.infer<typeof publishReportSchema>;

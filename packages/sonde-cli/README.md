@@ -2,6 +2,12 @@
 
 Sonde CLI for evaluating and improving AI-native/AI-friendly CLI behavior through manifest generation, deterministic runtime checks, and scoring.
 
+Primary goals:
+
+1. Generate a manifest contract for target CLIs from help output.
+2. Evaluate target CLIs and produce report payloads.
+3. Expose Sonde's own manifest contract as a self-compliant reference.
+
 ## Canonical docs
 
 Use `apps/web/content/docs` as the source of truth:
@@ -28,9 +34,9 @@ Commands:
 
 ```sh
 sonde generate <cli> [--json]
+sonde score <cli> [--json]
 sonde manifest [--json]
 sonde run <cli> [--json]
-sonde score <cli> [--json]
 sonde publish <cli> [--json]
 sonde serve [--json]
 ```
@@ -39,6 +45,11 @@ sonde serve [--json]
 
 - Default: human-readable logs
 - `--json`: machine-readable JSON payloads for automation and CI
+
+Notes:
+
+- `publish` is an optional submit step for evaluation reports.
+- `serve` is an optional JSON-line integration protocol.
 
 ## Manifest file
 

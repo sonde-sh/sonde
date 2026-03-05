@@ -151,7 +151,12 @@ describe("sonde CLI", () => {
   it("runs score command in json mode", async () => {
     const { runCli } = await import("../src/cli.js");
     runCommandMock.mockResolvedValue({ ok: true, command: "supabase", args: ["--help"] });
-    scoreManifestMock.mockResolvedValue({ score: 96 });
+    scoreManifestMock.mockResolvedValue({
+      manifestVersion: "1.0.0",
+      generatedAt: "2026-03-05T00:00:00.000Z",
+      total: 96,
+      metrics: [],
+    });
     const { io, stdout } = createIo();
 
     const exitCode = await runCli(["score", "vercel", "--json"], io);
@@ -178,7 +183,12 @@ describe("sonde CLI", () => {
       apiVersion: "1.0.0",
       command: "score",
       cli: "vercel",
-      result: { score: 96 },
+      result: {
+        manifestVersion: "1.0.0",
+        generatedAt: "2026-03-05T00:00:00.000Z",
+        total: 96,
+        metrics: [],
+      },
     });
   });
 
@@ -205,8 +215,8 @@ describe("sonde CLI", () => {
     const exitCode = await runCli(["publish", "vercel", "--json"], io);
 
     expect(exitCode).toBe(0);
-    expect(generateManifestMock).toHaveBeenCalledWith({ cli: "vercel" });
-    expect(runCommandMock).toHaveBeenCalledTimes(3);
+    expect(generateManifestMock).toHaveBeenCalledTimes(0);
+    expect(runCommandMock).toHaveBeenCalledTimes(2);
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(
       "https://example.com/api/reports/publish",
@@ -215,6 +225,17 @@ describe("sonde CLI", () => {
         headers: expect.objectContaining({
           "content-type": "application/json",
           "x-sonde-publish-token": "test-token",
+        }),
+      }),
+    );
+    const [, requestInit] = fetchMock.mock.calls[0] as [string, { body?: string }];
+    const submittedBody = JSON.parse(requestInit.body ?? "{}") as Record<string, unknown>;
+    expect(submittedBody).toEqual(
+      expect.objectContaining({
+        cli: "vercel",
+        score: 88,
+        report: expect.objectContaining({
+          total: 88,
         }),
       }),
     );
@@ -233,6 +254,9 @@ describe("sonde CLI", () => {
           cli: "vercel",
           score: 88,
           schemaValid: true,
+          report: expect.objectContaining({
+            total: 88,
+          }),
         }),
       }),
     });
@@ -408,6 +432,12 @@ describe("sonde CLI", () => {
     expect(stderr).toEqual([]);
     expect(stdout).toHaveLength(1);
     expect(stdout.at(0)).toContain("Usage: sonde <command> [options]");
+    expect(stdout.at(0)).toContain(
+      "Generate a Sonde manifest by exploring <cli> help output",
+    );
+    expect(stdout.at(0)).toContain(
+      "Evaluate <cli> against manifest rules and return report",
+    );
   });
 
   it("returns version with --version", async () => {

@@ -10,9 +10,10 @@ Get from zero to a reproducible manifest workflow in a few commands using the re
 ## Mental model
 
 - `generate` creates the standardized contract artifact (`sondage.manifest.json`).
-- `manifest` prints Sonde's own reference Sondage manifest.
-- `run` validates deterministic behavior against that local contract.
-- `score` outputs a compatibility report that can be compared across tools.
+- `score` is the canonical CLI evaluation report against that local contract.
+- `manifest` prints Sonde's own reference Sondage manifest (self-compliance check).
+- `run` is a deterministic diagnostic command.
+- `publish` is an optional step to submit the report to the website API.
 
 ## Inputs
 

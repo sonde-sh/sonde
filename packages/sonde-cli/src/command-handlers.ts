@@ -41,27 +41,7 @@ export async function handleRun(context: CommandContext): Promise<unknown> {
 
 export async function handleScore(context: CommandContext): Promise<unknown> {
   const manifest = await loadManifest(context.cwd);
-  const baselineRun = await runCommand({
-    command: manifest.cli.binary,
-    args: ["--help"],
-    availableOptions: manifest.globalOptions,
-    cwd: context.cwd,
-    preferJson: true,
-    preferNonInteractive: true,
-  });
-  const repeatRun = await runCommand({
-    command: manifest.cli.binary,
-    args: ["--help"],
-    availableOptions: manifest.globalOptions,
-    cwd: context.cwd,
-    preferJson: true,
-    preferNonInteractive: true,
-  });
-
-  return scoreManifest({
-    manifest,
-    runResults: [baselineRun, repeatRun],
-  });
+  return evaluateManifestReliability(manifest, context.cwd);
 }
 
 interface PublishReportPayload {
@@ -74,14 +54,13 @@ interface PublishReportPayload {
   interactivePrompts: boolean;
   notes: string;
   sourceVersion?: string;
+  report: Record<string, unknown>;
 }
 
 export async function handlePublish(context: CommandContext): Promise<unknown> {
   const publishUrl = readRequiredEnv("SONDE_PUBLISH_URL");
   const publishToken = readRequiredEnv("SONDE_PUBLISH_TOKEN");
 
-  await handleGenerate(context);
-  await handleRun(context);
   const scoreResult = await handleScore(context);
   const report = normalizeScoreToPublishPayload(context.cli, scoreResult);
 
@@ -151,7 +130,35 @@ function normalizeScoreToPublishPayload(cli: string, scoreResult: unknown): Publ
     interactivePrompts,
     notes,
     sourceVersion: readString(process.env.npm_package_version) ?? undefined,
+    report: scoreResult,
   };
+}
+
+async function evaluateManifestReliability(
+  manifest: SondeManifest,
+  cwd: string,
+): Promise<unknown> {
+  const baselineRun = await runCommand({
+    command: manifest.cli.binary,
+    args: ["--help"],
+    availableOptions: manifest.globalOptions,
+    cwd,
+    preferJson: true,
+    preferNonInteractive: true,
+  });
+  const repeatRun = await runCommand({
+    command: manifest.cli.binary,
+    args: ["--help"],
+    availableOptions: manifest.globalOptions,
+    cwd,
+    preferJson: true,
+    preferNonInteractive: true,
+  });
+
+  return scoreManifest({
+    manifest,
+    runResults: [baselineRun, repeatRun],
+  });
 }
 
 function readRequiredEnv(key: string): string {

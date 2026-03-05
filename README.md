@@ -3,6 +3,16 @@
 Sonde defines a stable manifest contract for AI-native CLI workflows and provides tooling to generate, validate, and score against that contract.
 The CLI in this repository is the reference implementation used to produce standardized artifacts for developers, agents, and automation.
 
+## Product scope
+
+Sonde CLI has three primary goals:
+
+1. Generate the manifest JSON contract that target CLIs should expose from `their-cli manifest`, by exploring command/help output.
+2. Evaluate a target CLI against the manifest rules and produce a machine-readable report.
+3. Be Sonde-compliant itself by exposing its own `sonde manifest` contract.
+
+Integration commands (`publish`, `serve`) are optional capabilities around that core workflow.
+
 ## Canonical docs
 
 The canonical documentation source is:
@@ -44,9 +54,9 @@ npx @sonde-sh/sonde --help
 
 ```sh
 sonde generate <cli> [--json]
+sonde score <cli> [--json]
 sonde manifest [--json]
 sonde run <cli> [--json]
-sonde score <cli> [--json]
 sonde publish <cli> [--json]
 sonde serve [--json]
 ```
