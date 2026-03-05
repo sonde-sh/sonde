@@ -1,0 +1,29 @@
+name: Security Report (Public Placeholder)
+description: Use this only if private advisory reporting is unavailable
+title: "[Security]: private report requested"
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include vulnerability details here.
+
+        Preferred path:
+        https://github.com/sonde-sh/sonde/security/advisories/new
+
+        This issue template exists only as a fallback to request a private intake path.
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I understand this is a public issue and I did not include sensitive details.
+          required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Minimal summary
+      description: High-level statement only (no PoC, no exploit details).
+      placeholder: "Potential vulnerability in <area>. Requesting private follow-up."
+    validations:
+      required: true

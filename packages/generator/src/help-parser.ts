@@ -1,5 +1,5 @@
-import { normalizeOptions } from "@repo/spec";
-import type { StmOption } from "@repo/spec";
+import { normalizeOptions } from "@sonde-sh/spec";
+import type { StmOption } from "@sonde-sh/spec";
 
 export interface ParsedHelpText {
   description?: string;

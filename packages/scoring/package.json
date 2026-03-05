@@ -1,19 +1,44 @@
 {
-  "name": "@repo/scoring",
-  "version": "0.0.0",
+  "name": "@sonde-sh/scoring",
+  "version": "0.1.0",
   "type": "module",
-  "private": true,
-  "exports": {
-    ".": "./src/index.ts"
+  "private": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonde-sh/sonde.git"
   },
+  "homepage": "https://github.com/sonde-sh/sonde#readme",
+  "bugs": {
+    "url": "https://github.com/sonde-sh/sonde/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts",
+    "dist/*.d.ts.map"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check-types": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepack": "pnpm run build"
   },
   "dependencies": {
-    "@repo/runtime": "workspace:*",
-    "@repo/spec": "workspace:*"
+    "@sonde-sh/runtime": "workspace:*",
+    "@sonde-sh/spec": "workspace:*"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

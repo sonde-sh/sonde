@@ -1,11 +1,43 @@
 ---
-title: CLI Implementation Checklist
-description: Keep CLI workflows deterministic, scriptable, and compatible with Sonde report ingestion.
+title: CLI Reference
+description: Public command reference for the Sonde CLI package.
 ---
 
-## Machine-readable output
+## Install
 
-Prefer deterministic flags such as `--json` for pipeline-friendly parsing.
+```sh
+npm install -g @sonde-sh/sonde
+```
+
+Or execute directly:
+
+```sh
+npx @sonde-sh/sonde --help
+```
+
+## Global flags
+
+- `--json`: emit machine-readable JSON payloads.
+- `--help`, `-h`: show command usage.
+- `--version`, `-v`: print package version.
+
+## Commands
+
+### `sonde generate <cli> [--json]`
+
+Generate `sondage.manifest.json` from `<cli> --help` output.
+
+### `sonde run <cli> [--json]`
+
+Run deterministic checks using the local `sondage.manifest.json`.
+
+### `sonde score <cli> [--json]`
+
+Compute a weighted CLI score (0-100) from manifest + run behavior.
+
+### `sonde serve [--json]`
+
+Run a line-delimited JSON protocol for tool discovery/execution.
 
 ## Prompt control
 

@@ -1,21 +1,50 @@
 {
-  "name": "@repo/sonde-cli",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@sonde-sh/sonde",
+  "version": "0.1.0",
+  "private": false,
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonde-sh/sonde.git"
+  },
+  "homepage": "https://github.com/sonde-sh/sonde#readme",
+  "bugs": {
+    "url": "https://github.com/sonde-sh/sonde/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    "dist/src/*.js",
+    "dist/src/*.d.ts",
+    "dist/src/*.d.ts.map"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "types": "./dist/src/index.d.ts",
   "bin": {
     "sonde": "./dist/src/bin.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check-types": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepack": "pnpm run build"
   },
   "dependencies": {
-    "@repo/generator": "workspace:*",
-    "@repo/runtime": "workspace:*",
-    "@repo/scoring": "workspace:*",
-    "@repo/spec": "workspace:*"
+    "@sonde-sh/generator": "workspace:*",
+    "@sonde-sh/runtime": "workspace:*",
+    "@sonde-sh/scoring": "workspace:*",
+    "@sonde-sh/spec": "workspace:*"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

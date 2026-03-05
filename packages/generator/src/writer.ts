@@ -1,8 +1,8 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { validateManifest } from "@repo/spec";
-import type { StmManifestV1 } from "@repo/spec";
+import { validateManifest } from "@sonde-sh/spec";
+import type { StmManifestV1 } from "@sonde-sh/spec";
 
 export const DEFAULT_OUTPUT_FILE = "sondage.manifest.json";
 

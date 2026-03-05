@@ -1,4 +1,4 @@
-import type { RunResult } from "@repo/runtime";
+import type { RunResult } from "@sonde-sh/runtime";
 import { describe, expect, it } from "vitest";
 
 import { ANALYZERS, scoreManifest } from "../src/index.js";

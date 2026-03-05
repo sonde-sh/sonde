@@ -1,4 +1,7 @@
 import process from "node:process";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { handleGenerate, handleRun, handleScore, loadManifest } from "./command-handlers.js";
 import { createNodeIo } from "./io.js";
 import { CliError, writeError, writeResult } from "./output.js";
@@ -6,13 +9,17 @@ import { runServeLoop } from "./serve.js";
 import type { CliIo, JsonFailure } from "./types.js";
 
 const COMMANDS = ["generate", "run", "serve", "score"] as const;
+const HELP_FLAGS = new Set(["--help", "-h"]);
+const VERSION_FLAGS = new Set(["--version", "-v"]);
 
 type SondeCommand = (typeof COMMANDS)[number];
 
 interface ParsedArgs {
-  command: SondeCommand;
+  command?: SondeCommand;
   cli?: string;
   json: boolean;
+  showHelp: boolean;
+  showVersion: boolean;
 }
 
 export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promise<number> {
@@ -22,10 +29,25 @@ export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promis
     parsed = parseArgs(argv);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Invalid CLI arguments";
-    writeError(io, false, {
+    writeError(io, argv.includes("--json"), {
       ok: false,
       error: { message },
     });
+    return 1;
+  }
+
+  if (parsed.showVersion) {
+    io.writeStdout(await readPackageVersion());
+    return 0;
+  }
+
+  if (parsed.showHelp) {
+    io.writeStdout(getUsage(parsed.command));
+    return 0;
+  }
+
+  if (!parsed.command) {
+    io.writeStderr(getUsage());
     return 1;
   }
 
@@ -93,11 +115,43 @@ export async function runCli(argv: string[], io: CliIo = createNodeIo()): Promis
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const json = argv.includes("--json");
-  const nonFlagArgs = argv.filter((arg) => arg !== "--json");
+  const hasHelpFlag = argv.some((arg) => HELP_FLAGS.has(arg));
+  const hasVersionFlag = argv.some((arg) => VERSION_FLAGS.has(arg));
+  const nonFlagArgs = argv.filter(
+    (arg) => arg !== "--json" && !HELP_FLAGS.has(arg) && !VERSION_FLAGS.has(arg),
+  );
+
+  if (hasVersionFlag && nonFlagArgs.length === 0) {
+    return {
+      json,
+      showHelp: false,
+      showVersion: true,
+    };
+  }
+
+  if (nonFlagArgs.length === 0) {
+    if (hasHelpFlag) {
+      return {
+        json,
+        showHelp: true,
+        showVersion: false,
+      };
+    }
+    throw new CliError(getUsage());
+  }
 
   const command = nonFlagArgs.at(0);
   if (!command || !isSondeCommand(command)) {
-    throw new CliError("Usage: sonde <generate|run|serve|score> [cli] [--json]");
+    throw new CliError(getUsage());
+  }
+
+  if (hasHelpFlag) {
+    return {
+      command,
+      json,
+      showHelp: true,
+      showVersion: false,
+    };
   }
 
   if (command === "serve") {
@@ -108,6 +162,8 @@ export function parseArgs(argv: string[]): ParsedArgs {
     return {
       command,
       json,
+      showHelp: false,
+      showVersion: false,
     };
   }
 
@@ -124,9 +180,60 @@ export function parseArgs(argv: string[]): ParsedArgs {
     command,
     cli,
     json,
+    showHelp: false,
+    showVersion: false,
   };
 }
 
 function isSondeCommand(value: string): value is SondeCommand {
   return COMMANDS.includes(value as SondeCommand);
+}
+
+function getUsage(command?: SondeCommand): string {
+  if (!command) {
+    return [
+      "Usage: sonde <command> [options]",
+      "",
+      "Commands:",
+      "  generate <cli>    Generate sondage manifest from <cli> help output",
+      "  run <cli>         Execute deterministic run checks for <cli>",
+      "  score <cli>       Score deterministic behavior for <cli>",
+      "  serve             Start JSON line tool protocol server",
+      "",
+      "Options:",
+      "  --json            Output machine-readable JSON",
+      "  --help, -h        Show help",
+      "  --version, -v     Show CLI version",
+    ].join("\n");
+  }
+
+  if (command === "serve") {
+    return "Usage: sonde serve [--json]";
+  }
+
+  return `Usage: sonde ${command} <cli> [--json]`;
+}
+
+async function readPackageVersion(): Promise<string> {
+  try {
+    const currentFile = fileURLToPath(import.meta.url);
+    const candidatePaths = [
+      path.resolve(path.dirname(currentFile), "../package.json"),
+      path.resolve(path.dirname(currentFile), "../../package.json"),
+    ];
+    for (const packageJsonPath of candidatePaths) {
+      try {
+        const packageJsonRaw = await readFile(packageJsonPath, "utf8");
+        const parsed = JSON.parse(packageJsonRaw) as { version?: unknown };
+        if (typeof parsed.version === "string" && parsed.version.length > 0) {
+          return parsed.version;
+        }
+      } catch {
+        // Try the next candidate path.
+      }
+    }
+  } catch {
+    // Fall through to a safe default when package metadata is unavailable.
+  }
+  return "0.0.0";
 }

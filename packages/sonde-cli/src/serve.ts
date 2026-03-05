@@ -1,4 +1,4 @@
-import { executeManifestTool } from "@repo/runtime";
+import { executeManifestTool } from "@sonde-sh/runtime";
 import type {
   CliIo,
   JsonSchema,

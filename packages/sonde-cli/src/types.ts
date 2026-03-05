@@ -1,4 +1,4 @@
-import type { StmManifestV1 } from "@repo/spec";
+import type { StmManifestV1 } from "@sonde-sh/spec";
 
 export interface JsonSchema {
   type: "object";

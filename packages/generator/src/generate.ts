@@ -1,6 +1,6 @@
 import { execa } from "execa";
 
-import type { StmManifestV1 } from "@repo/spec";
+import type { StmManifestV1 } from "@sonde-sh/spec";
 
 import { parseHelpText } from "./help-parser.js";
 import { generateManifestFromHelp } from "./manifest-generator.js";

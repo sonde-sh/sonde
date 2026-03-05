@@ -1,4 +1,4 @@
-import type { StmCommand, StmManifestV1 } from "@repo/spec";
+import type { StmCommand, StmManifestV1 } from "@sonde-sh/spec";
 
 import { parseHelpText } from "./help-parser.js";
 

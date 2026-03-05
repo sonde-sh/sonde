@@ -1,9 +1,9 @@
 import path from "node:path";
 
-import { generateManifest } from "@repo/generator";
-import { runCommand } from "@repo/runtime";
-import { scoreManifest } from "@repo/scoring";
-import { loadManifest as loadManifestFromSpec } from "@repo/spec";
+import { generateManifest } from "@sonde-sh/generator";
+import { runCommand } from "@sonde-sh/runtime";
+import { scoreManifest } from "@sonde-sh/scoring";
+import { loadManifest as loadManifestFromSpec } from "@sonde-sh/spec";
 
 import type { CommandContext, SondeManifest } from "./types.js";
 
@@ -24,7 +24,7 @@ export async function handleGenerate(context: CommandContext): Promise<unknown> 
 export async function handleRun(context: CommandContext): Promise<unknown> {
   const manifest = await loadManifest(context.cwd);
   return runCommand({
-    command: context.cli,
+    command: manifest.cli.binary,
     args: ["--help"],
     availableOptions: manifest.globalOptions,
     cwd: context.cwd,
@@ -36,7 +36,7 @@ export async function handleRun(context: CommandContext): Promise<unknown> {
 export async function handleScore(context: CommandContext): Promise<unknown> {
   const manifest = await loadManifest(context.cwd);
   const baselineRun = await runCommand({
-    command: context.cli,
+    command: manifest.cli.binary,
     args: ["--help"],
     availableOptions: manifest.globalOptions,
     cwd: context.cwd,
@@ -44,7 +44,7 @@ export async function handleScore(context: CommandContext): Promise<unknown> {
     preferNonInteractive: true,
   });
   const repeatRun = await runCommand({
-    command: context.cli,
+    command: manifest.cli.binary,
     args: ["--help"],
     availableOptions: manifest.globalOptions,
     cwd: context.cwd,

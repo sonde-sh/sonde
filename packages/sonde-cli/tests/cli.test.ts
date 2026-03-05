@@ -7,13 +7,13 @@ const runCommandMock = vi.fn();
 const executeManifestToolMock = vi.fn();
 const scoreManifestMock = vi.fn();
 
-vi.mock("@repo/spec", () => ({ loadManifest: loadManifestMock }));
-vi.mock("@repo/generator", () => ({ generateManifest: generateManifestMock }));
-vi.mock("@repo/runtime", () => ({
+vi.mock("@sonde-sh/spec", () => ({ loadManifest: loadManifestMock }));
+vi.mock("@sonde-sh/generator", () => ({ generateManifest: generateManifestMock }));
+vi.mock("@sonde-sh/runtime", () => ({
   runCommand: runCommandMock,
   executeManifestTool: executeManifestToolMock,
 }));
-vi.mock("@repo/scoring", () => ({ scoreManifest: scoreManifestMock }));
+vi.mock("@sonde-sh/scoring", () => ({ scoreManifest: scoreManifestMock }));
 
 const manifest: SondeManifest = {
   version: "1",
@@ -101,7 +101,11 @@ describe("sonde CLI", () => {
     const exitCode = await runCli(["run", "supabase", "--json"], io);
 
     expect(exitCode).toBe(0);
-    expect(runCommandMock).toHaveBeenCalled();
+    expect(runCommandMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        command: "sonde-test",
+      }),
+    );
     const firstLine = stdout.at(0);
     expect(firstLine).toBeDefined();
     expect(JSON.parse(firstLine ?? "")).toEqual({
@@ -121,6 +125,19 @@ describe("sonde CLI", () => {
     const exitCode = await runCli(["score", "vercel", "--json"], io);
 
     expect(exitCode).toBe(0);
+    expect(runCommandMock).toHaveBeenCalledTimes(2);
+    expect(runCommandMock).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        command: "sonde-test",
+      }),
+    );
+    expect(runCommandMock).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        command: "sonde-test",
+      }),
+    );
     expect(scoreManifestMock).toHaveBeenCalled();
     const firstLine = stdout.at(0);
     expect(firstLine).toBeDefined();
@@ -210,6 +227,127 @@ describe("sonde CLI", () => {
       ok: false,
       error: {
         message: "Unknown tool 'dangerous-shell'",
+      },
+    });
+  });
+
+  it("returns usage in json format for invalid command with --json", async () => {
+    const { runCli } = await import("../src/cli.js");
+    const { io, stderr } = createIo();
+
+    const exitCode = await runCli(["wat", "--json"], io);
+
+    expect(exitCode).toBe(1);
+    expect(stderr).toHaveLength(1);
+    const firstError = stderr.at(0);
+    expect(firstError).toBeDefined();
+    expect(JSON.parse(firstError ?? "")).toEqual({
+      ok: false,
+      error: {
+        message: expect.stringContaining("Usage: sonde"),
+      },
+    });
+  });
+
+  it("returns usage for missing cli argument", async () => {
+    const { runCli } = await import("../src/cli.js");
+    const { io, stderr } = createIo();
+
+    const exitCode = await runCli(["run", "--json"], io);
+
+    expect(exitCode).toBe(1);
+    const firstError = stderr.at(0);
+    expect(firstError).toBeDefined();
+    expect(JSON.parse(firstError ?? "")).toEqual({
+      ok: false,
+      error: {
+        message: "Usage: sonde run <cli> [--json]",
+      },
+    });
+  });
+
+  it("returns error for extra command arguments", async () => {
+    const { runCli } = await import("../src/cli.js");
+    const { io, stderr } = createIo();
+
+    const exitCode = await runCli(["generate", "vercel", "extra", "--json"], io);
+
+    expect(exitCode).toBe(1);
+    const firstError = stderr.at(0);
+    expect(firstError).toBeDefined();
+    expect(JSON.parse(firstError ?? "")).toEqual({
+      ok: false,
+      error: {
+        message: "Unexpected extra arguments for 'generate'",
+      },
+    });
+  });
+
+  it("returns help text with --help", async () => {
+    const { runCli } = await import("../src/cli.js");
+    const { io, stdout, stderr } = createIo();
+
+    const exitCode = await runCli(["--help"], io);
+
+    expect(exitCode).toBe(0);
+    expect(stderr).toEqual([]);
+    expect(stdout).toHaveLength(1);
+    expect(stdout.at(0)).toContain("Usage: sonde <command> [options]");
+  });
+
+  it("returns version with --version", async () => {
+    const { runCli } = await import("../src/cli.js");
+    const { io, stdout, stderr } = createIo();
+
+    const exitCode = await runCli(["--version"], io);
+
+    expect(exitCode).toBe(0);
+    expect(stderr).toEqual([]);
+    expect(stdout).toHaveLength(1);
+    expect(stdout.at(0)).toBe("0.1.0");
+  });
+
+  it("returns error payload when manifest loading fails", async () => {
+    const { runCli } = await import("../src/cli.js");
+    loadManifestMock.mockResolvedValue({
+      ok: false,
+      error: {
+        code: "MISSING_FILE",
+        message: "Manifest file not found",
+      },
+    });
+    const { io, stderr } = createIo();
+
+    const exitCode = await runCli(["run", "supabase", "--json"], io);
+
+    expect(exitCode).toBe(1);
+    const firstError = stderr.at(0);
+    expect(firstError).toBeDefined();
+    expect(JSON.parse(firstError ?? "")).toEqual({
+      ok: false,
+      command: "run",
+      cli: "supabase",
+      error: {
+        message: "MISSING_FILE: Manifest file not found",
+      },
+    });
+  });
+
+  it("returns malformed request error in serve mode", async () => {
+    const { runCli } = await import("../src/cli.js");
+    const { io, stdout } = createIo(["not-json"]);
+
+    const exitCode = await runCli(["serve", "--json"], io);
+
+    expect(exitCode).toBe(0);
+    expect(stdout).toHaveLength(2);
+    const malformed = stdout.at(1);
+    expect(malformed).toBeDefined();
+    expect(JSON.parse(malformed ?? "")).toEqual({
+      id: null,
+      ok: false,
+      error: {
+        message: "Invalid JSON request",
       },
     });
   });

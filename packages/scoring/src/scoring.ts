@@ -1,5 +1,5 @@
-import type { RunResult } from "@repo/runtime";
-import type { StmManifestV1, StmOption } from "@repo/spec";
+import type { RunResult } from "@sonde-sh/runtime";
+import type { StmManifestV1, StmOption } from "@sonde-sh/spec";
 
 import { ANALYZERS, type AnalyzerEntry } from "./analyzers.js";
 

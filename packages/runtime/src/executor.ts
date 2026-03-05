@@ -1,5 +1,5 @@
 import { execa } from "execa";
-import type { StmCommand, StmManifestV1, StmOption } from "@repo/spec";
+import type { StmCommand, StmManifestV1, StmOption } from "@sonde-sh/spec";
 
 import { buildPreferredArgs, selectPreferredFlags } from "./flags.js";
 

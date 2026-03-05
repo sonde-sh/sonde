@@ -1,19 +1,49 @@
 # Sonde
 
-Sonde is a spec-first toolkit for evaluating and exposing CLI tools through a
-deterministic STM (Sondage Tool Manifest) contract.
+Sonde is a deterministic toolkit for analyzing CLI behavior through STM
+(Sondage Tool Manifest) artifacts and repeatable scoring.
 
-## Workspace layout
+## Packages
 
-- `packages/spec`: STM types, schema, and manifest loader/validator.
-- `packages/generator`: help-text parser and manifest generator.
-- `packages/runtime`: deterministic command executor.
-- `packages/scoring`: 0-100 weighted CLI scoring engine.
-- `packages/sonde-cli`: `sonde` binary (`generate`, `run`, `serve`, `score`).
-- `apps/web`: Sonde web app with overview (`/`), leaderboard (`/leaderboard`), and docs (`/docs/*`).
-- `examples/vercel`, `examples/supabase`: demo fixtures.
+- `@sonde-sh/sonde`: CLI binary (`sonde`)
+- `@sonde-sh/spec`: STM schema, types, and manifest loading/validation
+- `@sonde-sh/generator`: help-text parsing and manifest generation
+- `@sonde-sh/runtime`: deterministic command execution and tool execution
+- `@sonde-sh/scoring`: weighted (0-100) scoring engine for CLI behavior
 
-## Commands
+## Install the CLI
+
+```sh
+npm install -g @sonde-sh/sonde
+```
+
+Or run without installing:
+
+```sh
+npx @sonde-sh/sonde --help
+```
+
+## CLI commands
+
+```sh
+sonde generate <cli> --json
+sonde run <cli> --json
+sonde score <cli> --json
+sonde serve --json
+```
+
+Generated manifest path:
+
+- `sondage.manifest.json`
+
+## Local development
+
+Prerequisites:
+
+- Node.js 20+
+- pnpm 9+
+
+Install and validate:
 
 ```sh
 pnpm install
@@ -23,21 +53,21 @@ pnpm test
 pnpm build
 ```
 
-Run the CLI package directly:
+Run the local CLI build:
 
 ```sh
-pnpm --filter @repo/sonde-cli build
-node packages/sonde-cli/dist/src/bin.js generate <cli> --json
-node packages/sonde-cli/dist/src/bin.js run <cli> --json
-node packages/sonde-cli/dist/src/bin.js score <cli> --json
-node packages/sonde-cli/dist/src/bin.js serve --json
+pnpm --filter @sonde-sh/sonde build
+node packages/sonde-cli/dist/src/bin.js --help
 ```
 
-## Manifest
+## Release workflow
 
-Generated manifest path:
+This repository uses Changesets:
 
-- `sondage.manifest.json`
+```sh
+pnpm changeset
+pnpm version-packages
+pnpm release
+```
 
-Schema and validation are implemented in `@repo/spec` and consumed by all Sonde
-packages.
+Release PRs and npm publish are automated via GitHub Actions.

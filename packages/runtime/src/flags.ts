@@ -1,4 +1,4 @@
-import type { StmOption } from "@repo/spec";
+import type { StmOption } from "@sonde-sh/spec";
 
 export interface PreferredFlagSelection {
   jsonFlag?: string;

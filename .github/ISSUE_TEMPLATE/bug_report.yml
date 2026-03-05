@@ -1,0 +1,35 @@
+name: Bug Report
+description: Report a reproducible bug in Sonde packages or docs
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact commands, input, and files used.
+      placeholder: |
+        1. pnpm ...
+        2. sonde ...
+        3. observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Node, pnpm, OS, package versions.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and output
+      description: Include relevant stdout/stderr or stack traces.
