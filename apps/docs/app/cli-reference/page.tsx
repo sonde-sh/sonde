@@ -1,6 +1,3 @@
-import { Badge } from "../../components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-
 interface ChecklistItem {
   title: string;
   detail: string;
@@ -8,16 +5,16 @@ interface ChecklistItem {
 
 const checklist: ChecklistItem[] = [
   {
-    title: "Machine-readable output",
-    detail: "Prefer deterministic flags such as --json for pipeline-friendly parsing.",
+    title: "Canonical CLI docs",
+    detail: "Use /docs/cli-reference as the source of truth for all commands and flags.",
   },
   {
-    title: "Prompt control",
-    detail: "Use explicit answers, non-interactive modes, or skip flags in CI.",
+    title: "Serve protocol",
+    detail: "Use /docs/cli-serve-protocol for JSON line request and response contracts.",
   },
   {
-    title: "Artifact export",
-    detail: "Expose report and manifest paths so tooling can discover them automatically.",
+    title: "100/100 scoring path",
+    detail: "Use /docs/scoring-100-guide to reproduce and validate deterministic scoring.",
   },
 ];
 
@@ -25,32 +22,33 @@ export function CliReferencePage() {
   return (
     <div className="space-y-6">
       <section className="space-y-3">
-        <Badge variant="neutral">Route: /cli-reference</Badge>
-        <h1 className="text-3xl font-semibold tracking-tight">CLI implementation checklist</h1>
-        <p className="max-w-3xl text-sm leading-relaxed text-[var(--muted-foreground)]">
-          Keep CLI workflows deterministic, scriptable, and compatible with Sonde report
-          ingestion.
+        <p className="inline-flex rounded-full border px-3 py-1 text-xs font-medium">
+          Route: /cli-reference
+        </p>
+        <h1 className="text-3xl font-semibold tracking-tight">CLI docs pointer</h1>
+        <p className="max-w-3xl text-sm leading-relaxed text-(--muted-foreground)">
+          This route is intentionally a pointer page. Canonical Sonde documentation lives under
+          <code> /docs/* </code> so human readers and LLM tooling use one stable source.
         </p>
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
         {checklist.map((item) => (
-          <Card key={item.title}>
-            <CardHeader>
-              <CardTitle className="text-sm">{item.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-[var(--muted-foreground)]">
+          <article key={item.title} className="rounded-lg border p-4">
+            <h2 className="text-sm font-semibold">{item.title}</h2>
+            <p className="mt-2 text-sm text-(--muted-foreground)">
               {item.detail}
-            </CardContent>
-          </Card>
+            </p>
+          </article>
         ))}
       </section>
 
-      <section className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
-        <h2 className="text-sm font-semibold">Operational guidance</h2>
-        <p className="mt-2 text-sm leading-relaxed text-[var(--muted-foreground)]">
-          Sonde can expose generated artifacts through MCP-compatible surfaces so docs,
-          automation, and external tooling consume a single source of truth.
+      <section className="rounded-xl border border-(--border) bg-(--card) p-5">
+        <h2 className="text-sm font-semibold">Canonical docs routes</h2>
+        <p className="mt-2 text-sm leading-relaxed text-(--muted-foreground)">
+          Use <code>/docs/cli-reference</code>, <code>/docs/quickstart</code>,
+          <code>/docs/architecture</code>, and <code>/docs/troubleshooting</code> for full
+          reference content.
         </p>
       </section>
     </div>

@@ -1,0 +1,82 @@
+---
+title: Scoring 100 Guide
+description: Reproducible path to achieve and verify a 100/100 Sonde score for a CLI.
+---
+
+## Purpose
+
+Define a practical and repeatable process to push a CLI toward a 100/100 Sonde score.
+
+## Inputs
+
+- A target CLI with stable `--help` output.
+- Support (or equivalent) for machine-readable and non-interactive execution.
+- Sonde CLI installed or available via `npx`.
+
+## Outputs
+
+- Stable manifest and run results.
+- Score output at or near 100, with actionable deltas if below 100.
+
+## Reproducible workflow
+
+### 1) Generate a fresh manifest
+
+```sh
+sonde generate <cli> --json
+```
+
+### 2) Validate deterministic run behavior
+
+```sh
+sonde run <cli> --json
+```
+
+Review these fields in `result`:
+- `ok` should be `true`
+- `exitCode` should be `0`
+- `interactiveDetected` should be `false`
+- `usedPreferences` should include JSON and non-interactive flags when available
+
+### 3) Score with repeat runs
+
+```sh
+sonde score <cli> --json
+```
+
+Target:
+
+```json
+{
+  "ok": true,
+  "command": "score",
+  "result": {
+    "score": 100
+  }
+}
+```
+
+## What usually prevents 100/100
+
+- CLI output changes across runs.
+- Prompt-like output appears in stdout/stderr.
+- Non-zero exits in baseline or repeat run.
+- Missing machine-readable output support.
+
+## Improving score systematically
+
+- Prefer stable output formats (`--json`, `--format json`, or equivalent).
+- Add explicit non-interactive mode (`--non-interactive`, `--yes`, etc.).
+- Keep `--help` and command metadata deterministic.
+- Avoid timestamps/random values in default output paths checked by Sonde.
+
+## Edge cases
+
+- `run` and `score` currently execute `manifest.cli.binary --help`; ensure that path is deterministic first.
+- Passing `<cli>` to `run`/`score` does not override `manifest.cli.binary`.
+
+## See also
+
+- [CLI Reference](./cli-reference.mdx)
+- [Quickstart](./quickstart.mdx)
+- [Troubleshooting](./troubleshooting.mdx)

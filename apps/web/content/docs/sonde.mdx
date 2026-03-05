@@ -1,9 +1,25 @@
 ---
 title: STM Specification Overview
-description: Sonde defines an STM-oriented model for evaluating CLI behavior in repeatable, machine-readable scenarios.
+description: Sonde defines an STM-oriented model for building and evaluating AI-native, AI-friendly CLI behavior in repeatable machine-readable scenarios.
 ---
 
-## Key Elements
+## Purpose
+
+Explain Sonde's deterministic model for developing and evaluating AI-native, AI-friendly CLI behavior.
+
+## Inputs
+
+- CLI help/command behavior.
+- Scenario metadata captured in manifest.
+- Runtime outputs from deterministic command execution.
+
+## Outputs
+
+- Structured observations (stdout, stderr, parsed JSON when available).
+- Determinism signals (interactive detection, non-zero exits).
+- Scoring-ready run results.
+
+## Key elements
 
 ### State transitions
 
@@ -11,13 +27,24 @@ Model deterministic execution stages for each CLI scenario.
 
 ### Observations
 
-Capture stdout/stderr, JSON payloads, and prompt interactions.
+Capture stdout, stderr, parsed JSON payloads, and prompt interactions.
 
 ### Scoring
 
-Compute comparable totals based on explicit criteria and weights.
+Compute comparable totals from explicit weighted criteria.
 
 ## When to use
 
 Use this spec when you need deterministic test assertions across different CLIs,
 environments, or CI runs without relying on free-form manual interpretation.
+
+## Edge cases
+
+- Deterministic checks degrade when interactive prompts are detected.
+- Equivalent flags across CLIs may map to different option names and must be captured in manifest options.
+
+## See also
+
+- [Manifest](./sondage-manifest.mdx)
+- [CLI Reference](./cli-reference.mdx)
+- [Architecture](./architecture.mdx)

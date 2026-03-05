@@ -1,6 +1,15 @@
 # @sonde-sh/sonde
 
-Sonde CLI for deterministic CLI manifest generation, runtime checks, and scoring.
+Sonde CLI for evaluating and improving AI-native/AI-friendly CLI behavior through manifest generation, deterministic runtime checks, and scoring.
+
+## Canonical docs
+
+Use `apps/web/content/docs` as the source of truth:
+
+- [CLI reference](../../apps/web/content/docs/cli-reference.mdx)
+- [Quickstart](../../apps/web/content/docs/quickstart.mdx)
+- [Serve protocol](../../apps/web/content/docs/cli-serve-protocol.mdx)
+- [Troubleshooting](../../apps/web/content/docs/troubleshooting.mdx)
 
 ## Install
 
@@ -18,10 +27,10 @@ sonde --version
 Commands:
 
 ```sh
-sonde generate <cli> --json
-sonde run <cli> --json
-sonde score <cli> --json
-sonde serve --json
+sonde generate <cli> [--json]
+sonde run <cli> [--json]
+sonde score <cli> [--json]
+sonde serve [--json]
 ```
 
 ## Output modes

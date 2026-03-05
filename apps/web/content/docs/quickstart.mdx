@@ -1,0 +1,100 @@
+---
+title: Quickstart
+description: Fast path to evaluate and improve an AI-native, AI-friendly CLI with Sonde.
+---
+
+## Purpose
+
+Get from zero to a reproducible Sonde workflow for AI-friendly CLI evaluation in a few commands.
+
+## Inputs
+
+- Node.js and npm/pnpm installed.
+- A target CLI available in `PATH` (example: `vercel`).
+- Write access in current working directory.
+
+## Outputs
+
+- `sondage.manifest.json` in current directory.
+- Deterministic run output.
+- Scoring output with a 0-100 score.
+
+## Steps
+
+### 1) Install or run directly
+
+```sh
+npx @sonde-sh/sonde --help
+```
+
+### 2) Generate manifest
+
+```sh
+sonde generate vercel --json
+```
+
+Expected output shape:
+
+```json
+{
+  "ok": true,
+  "command": "generate",
+  "cli": "vercel",
+  "result": {
+    "manifest": {},
+    "outputPath": "sondage.manifest.json",
+    "commandCount": 0
+  }
+}
+```
+
+### 3) Run deterministic check
+
+```sh
+sonde run vercel --json
+```
+
+Expected output shape:
+
+```json
+{
+  "ok": true,
+  "command": "run",
+  "cli": "vercel",
+  "result": {
+    "ok": true,
+    "exitCode": 0
+  }
+}
+```
+
+### 4) Compute score
+
+```sh
+sonde score vercel --json
+```
+
+Expected output shape:
+
+```json
+{
+  "ok": true,
+  "command": "score",
+  "cli": "vercel",
+  "result": {
+    "score": 100
+  }
+}
+```
+
+## Edge cases
+
+- If target CLI is missing, generation fails with execution error.
+- `run` and `score` require `sondage.manifest.json` in current directory.
+- If CLI output looks interactive, run quality decreases and score may drop.
+
+## See also
+
+- [CLI Reference](./cli-reference.mdx)
+- [Scoring 100 Guide](./scoring-100-guide.mdx)
+- [Troubleshooting](./troubleshooting.mdx)

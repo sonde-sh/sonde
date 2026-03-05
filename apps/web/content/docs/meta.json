@@ -1,4 +1,16 @@
 {
   "title": "Sonde Docs",
-  "pages": ["index", "sonde", "sondage-manifest", "examples", "cli-reference"]
+  "pages": [
+    "index",
+    "quickstart",
+    "cli-reference",
+    "cli-serve-protocol",
+    "scoring-100-guide",
+    "sonde",
+    "sondage-manifest",
+    "architecture",
+    "examples",
+    "troubleshooting",
+    "glossary"
+  ]
 }

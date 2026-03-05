@@ -1,20 +1,61 @@
 ---
 title: End-to-End Workflow Examples
-description: Typical implementation path from manifest generation to sondages rendering.
+description: Copy-paste examples for AI-friendly CLI evaluation and deterministic Sonde workflows.
 ---
 
-## Step 1: Prepare scenarios
+## Purpose
 
-Define expected stdout/stderr and explicit prompt branches.
+Provide practical command sequences for common Sonde usage patterns when building and evaluating AI-friendly CLIs.
 
-## Step 2: Execute runs
+## Inputs
 
-Run scenarios in CI and locally to validate reproducibility.
+- A target CLI binary in `PATH`.
+- Working directory where artifacts can be written.
 
-## Step 3: Aggregate reports
+## Outputs
 
-Store output JSON files in a shared reports directory.
+- Generated manifest.
+- Run result payload.
+- Score payload.
 
-## Step 4: Render sondages
+## Example: baseline evaluation
 
-Use the web app route to visualize deterministic score output.
+```sh
+sonde generate vercel --json
+sonde run vercel --json
+sonde score vercel --json
+```
+
+## Example: protocol mode for tooling
+
+```sh
+sonde serve --json
+```
+
+Then write newline-delimited requests:
+
+```json
+{"id":"1","method":"tools/list"}
+{"id":"2","method":"tools/call","params":{"name":"deploy","input":{"target":"preview"}}}
+```
+
+## Example: CI-safe invocation
+
+```sh
+sonde generate supabase --json
+sonde run supabase --json
+sonde score supabase --json
+```
+
+Use JSON output in CI and parse `ok` + command result fields.
+
+## Edge cases
+
+- If a target CLI lacks stable help output, regenerate manifest after CLI upgrades.
+- If run output includes prompts, fix CLI non-interactive behavior before relying on score.
+
+## See also
+
+- [Quickstart](./quickstart.mdx)
+- [CLI Reference](./cli-reference.mdx)
+- [Serve Protocol](./cli-serve-protocol.mdx)

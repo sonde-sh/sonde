@@ -1,7 +1,45 @@
 # Sonde
 
-Sonde is a deterministic toolkit for analyzing CLI behavior through STM
-(Sondage Tool Manifest) artifacts and repeatable scoring.
+Sonde is a toolkit for evaluating and building AI-native, AI-friendly CLIs.
+It generates machine-readable CLI manifests, runs deterministic checks, and scores how reliably a CLI works for developers, agents, and automation.
+
+## Canonical docs
+
+The canonical documentation source is:
+
+- `apps/web/content/docs`
+
+Start here:
+
+- [Docs index](./apps/web/content/docs/index.mdx)
+- [Quickstart](./apps/web/content/docs/quickstart.mdx)
+- [CLI reference](./apps/web/content/docs/cli-reference.mdx)
+- [Serve protocol](./apps/web/content/docs/cli-serve-protocol.mdx)
+- [Scoring 100 guide](./apps/web/content/docs/scoring-100-guide.mdx)
+- [Troubleshooting](./apps/web/content/docs/troubleshooting.mdx)
+
+## Install CLI
+
+```sh
+npm install -g @sonde-sh/sonde
+```
+
+Or run directly:
+
+```sh
+npx @sonde-sh/sonde --help
+```
+
+## Quick command view
+
+```sh
+sonde generate <cli> [--json]
+sonde run <cli> [--json]
+sonde score <cli> [--json]
+sonde serve [--json]
+```
+
+For complete behavior, outputs, and edge cases, use the canonical [CLI reference](./apps/web/content/docs/cli-reference.mdx).
 
 ## Packages
 
@@ -11,36 +49,11 @@ Sonde is a deterministic toolkit for analyzing CLI behavior through STM
 - `@sonde-sh/runtime`: deterministic command execution and tool execution
 - `@sonde-sh/scoring`: weighted (0-100) scoring engine for CLI behavior
 
-## Install the CLI
-
-```sh
-npm install -g @sonde-sh/sonde
-```
-
-Or run without installing:
-
-```sh
-npx @sonde-sh/sonde --help
-```
-
-## CLI commands
-
-```sh
-sonde generate <cli> --json
-sonde run <cli> --json
-sonde score <cli> --json
-sonde serve --json
-```
-
-Generated manifest path:
-
-- `sondage.manifest.json`
-
 ## Local development
 
 Prerequisites:
 
-- Node.js 20+
+- Node.js 18+
 - pnpm 9+
 
 Install and validate:

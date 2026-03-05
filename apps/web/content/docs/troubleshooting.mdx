@@ -1,0 +1,85 @@
+---
+title: Troubleshooting
+description: Common Sonde CLI failures and direct fixes.
+---
+
+## Purpose
+
+Resolve common setup and execution failures quickly.
+
+## Inputs
+
+- Command being executed.
+- Current working directory.
+- CLI stderr or JSON error payload.
+
+## Outputs
+
+- Root-cause identification.
+- Corrective command or configuration change.
+
+## Common issues
+
+### `MISSING_FILE: Manifest file not found`
+
+Cause:
+- `run`, `score`, or `serve` was executed without `sondage.manifest.json`.
+
+Fix:
+
+```sh
+sonde generate <cli> --json
+```
+
+Then rerun `run`, `score`, or `serve` from the same directory.
+
+### `Unexpected extra arguments for '<command>'`
+
+Cause:
+- Command received more positional args than supported.
+
+Fix:
+- Use exact forms:
+  - `sonde generate <cli> [--json]`
+  - `sonde run <cli> [--json]`
+  - `sonde score <cli> [--json]`
+  - `sonde serve [--json]`
+
+### `Usage: sonde <command> [options]`
+
+Cause:
+- Unknown command or missing command.
+
+Fix:
+
+```sh
+sonde --help
+```
+
+### `Unknown tool '<name>'` in serve mode
+
+Cause:
+- `tools/call` requested a command not present in manifest `commands`.
+
+Fix:
+- Call `tools/list` first, then use one returned tool name exactly.
+
+### Run result indicates interactive prompt detection
+
+Cause:
+- Target CLI emitted prompt-like output (for example `[y/n]`, `Are you sure`, `password`).
+
+Fix:
+- Prefer non-interactive target CLI flags.
+- Ensure manifest options include supported non-interactive flags.
+
+## Edge cases
+
+- `--help` and `--version` always return plain text even when `--json` is present.
+- `--version` is top-level only (`sonde --version`).
+
+## See also
+
+- [Quickstart](./quickstart.mdx)
+- [CLI Reference](./cli-reference.mdx)
+- [Scoring 100 Guide](./scoring-100-guide.mdx)

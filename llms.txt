@@ -1,0 +1,27 @@
+# Sonde LLM Index
+
+Canonical documentation source: `apps/web/content/docs`
+
+## Primary pages
+- `/docs` - overview and navigation
+- `/docs/quickstart` - first run path
+- `/docs/cli-reference` - full CLI contract
+- `/docs/cli-serve-protocol` - JSON line protocol for `sonde serve`
+- `/docs/scoring-100-guide` - reproducible path to score 100/100
+- `/docs/troubleshooting` - failures and fixes
+- `/docs/glossary` - canonical terminology
+
+## Concepts
+- `/docs/sonde` - STM model overview
+- `/docs/sondage-manifest` - manifest generation and lifecycle
+- `/docs/architecture` - package boundaries and data flow
+- `/docs/examples` - command workflows
+
+## Repository entrypoints
+- `/README.md` - human-friendly top-level overview linking to canonical docs
+- `/packages/sonde-cli/README.md` - package-level CLI entrypoint linking to canonical docs
+
+## Notes for agents
+- Treat `/docs/cli-reference` as authoritative for command syntax and behavior.
+- Treat `/docs/cli-serve-protocol` as authoritative for serve request/response shapes.
+- Prefer JSON examples and edge-case sections when generating integrations and tests.

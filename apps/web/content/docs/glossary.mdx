@@ -1,0 +1,49 @@
+---
+title: Glossary
+description: Shared Sonde terminology for deterministic CLI analysis.
+---
+
+## Purpose
+
+Define Sonde terms once so docs, code, and AI tooling use the same meaning.
+
+## Inputs
+
+- Sonde documentation and CLI usage.
+
+## Outputs
+
+- Stable vocabulary for users, maintainers, and LLM agents.
+
+## Terms
+
+- **STM (Sondage Tool Manifest)**
+  - JSON manifest that describes CLI identity, options, commands, and behavior metadata.
+
+- **Manifest**
+  - Usually `sondage.manifest.json`, generated from CLI help output and validated by `@sonde-sh/spec`.
+
+- **Deterministic run**
+  - Command execution where output and behavior are stable enough for automated comparison.
+
+- **Interactive detection**
+  - Runtime heuristic that flags prompt-like output (`[y/n]`, `password`, `choose`, and similar patterns).
+
+- **Preferred flags**
+  - Runtime-inferred flags added when available in manifest options (for JSON and non-interactive behavior).
+
+- **Serve protocol**
+  - JSON line protocol exposed by `sonde serve`, currently with `tools/list` and `tools/call`.
+
+- **Score**
+  - Weighted 0-100 result computed by `@sonde-sh/scoring` from manifest and run results.
+
+## Edge cases
+
+- The `<cli>` argument in `run`/`score` is not the binary actually executed; runtime uses `manifest.cli.binary`.
+
+## See also
+
+- [Sonde](./sonde.mdx)
+- [Manifest](./sondage-manifest.mdx)
+- [CLI Reference](./cli-reference.mdx)

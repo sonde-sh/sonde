@@ -3,23 +3,58 @@ title: Manifest Generation Guide
 description: Define and validate scenario manifests that power Sonde runners and downstream report tooling.
 ---
 
-## What it is
+## Purpose
 
 A normalized artifact describing CLI identity, scenarios, expected behavior, and
 scoring weights.
 
-## When to use
+## Inputs
 
-Generate manifests before execution to lock scenario intent and avoid drift across
-local and CI runs.
+- Target CLI binary accessible from environment.
+- Help text from root and subcommands.
 
 ## Outputs
 
-Store validated manifest artifacts next to report JSON files so Sonde and other
-tools can discover them.
+- `sondage.manifest.json` with validated STM structure.
+- Global options and command-level options for runtime preference selection.
 
 ## Key flow
 
-1. Generate manifests from source test specs.
-2. Validate schema before execution starts.
-3. Publish artifacts with the produced report files.
+1. Probe `<cli> --help`.
+2. Probe each discovered subcommand with `--help`.
+3. Generate STM manifest and write `sondage.manifest.json`.
+4. Validate manifest on load before `run`, `score`, or `serve`.
+
+## Deterministic examples
+
+Generate:
+
+```sh
+sonde generate vercel --json
+```
+
+Typical JSON response shape:
+
+```json
+{
+  "ok": true,
+  "command": "generate",
+  "cli": "vercel",
+  "result": {
+    "outputPath": "sondage.manifest.json",
+    "commandCount": 0
+  }
+}
+```
+
+## Edge cases
+
+- Help probing uses a per-command timeout.
+- Subcommand discovery quality depends on target CLI help formatting.
+- `run` and `score` consume `manifest.cli.binary`, not the `<cli>` argument.
+
+## See also
+
+- [CLI Reference](./cli-reference.mdx)
+- [Quickstart](./quickstart.mdx)
+- [Troubleshooting](./troubleshooting.mdx)

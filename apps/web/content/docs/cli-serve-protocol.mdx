@@ -1,0 +1,149 @@
+---
+title: Serve Protocol
+description: JSON line protocol contract for sonde serve.
+---
+
+## Purpose
+
+Document the line-delimited protocol used by `sonde serve` for tool discovery and execution.
+
+## Inputs
+
+- stdin lines containing JSON requests.
+- Loaded `sondage.manifest.json`.
+
+## Outputs
+
+- One JSON line response per request line.
+- Startup readiness line when server begins.
+
+## Startup contract
+
+Command:
+
+```sh
+sonde serve --json
+```
+
+First stdout line:
+
+```json
+{
+  "ok": true,
+  "command": "serve",
+  "status": "ready"
+}
+```
+
+## Request schema
+
+```json
+{
+  "id": "string-or-number",
+  "method": "tools/list | tools/call",
+  "params": {
+    "name": "tool-name",
+    "input": {}
+  }
+}
+```
+
+## `tools/list`
+
+Request:
+
+```json
+{
+  "id": "1",
+  "method": "tools/list"
+}
+```
+
+Response shape:
+
+```json
+{
+  "id": "1",
+  "ok": true,
+  "result": {
+    "tools": [
+      {
+        "name": "deploy",
+        "description": "Deploy project",
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      }
+    ]
+  }
+}
+```
+
+## `tools/call`
+
+Request:
+
+```json
+{
+  "id": "2",
+  "method": "tools/call",
+  "params": {
+    "name": "deploy",
+    "input": {
+      "target": "preview"
+    }
+  }
+}
+```
+
+Success response shape:
+
+```json
+{
+  "id": "2",
+  "ok": true,
+  "result": {
+    "tool": "deploy",
+    "output": {}
+  }
+}
+```
+
+Unknown tool response:
+
+```json
+{
+  "id": "3",
+  "ok": false,
+  "error": {
+    "message": "Unknown tool 'dangerous-shell'"
+  }
+}
+```
+
+Malformed JSON response:
+
+```json
+{
+  "id": null,
+  "ok": false,
+  "error": {
+    "message": "Invalid JSON request"
+  }
+}
+```
+
+## Edge cases
+
+- Empty lines are ignored.
+- Missing `params.name` for `tools/call` returns `Missing tool name in tools/call request`.
+- Runtime execution errors are returned as `ok: false` with request `id`.
+
+## See also
+
+- [CLI Reference](./cli-reference.mdx)
+- [Architecture](./architecture.mdx)
+- [Troubleshooting](./troubleshooting.mdx)

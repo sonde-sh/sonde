@@ -1,19 +1,36 @@
 ---
 title: Sonde Documentation
-description: Minimal reference for deterministic CLI evaluation.
+description: Canonical Sonde documentation for building and evaluating AI-native, AI-friendly CLIs.
 ---
 
-This docs surface focuses on implementation details: STM structure, manifest
-generation, reproducible execution, and machine-readable outputs.
+Sonde helps developers build and evaluate AI-native, AI-friendly CLIs with a deterministic workflow.
+This docs surface is the canonical source of truth.
 
-## Guides
+## Purpose
 
-- [STM Spec](./sonde.mdx): State model, observation schema, and scoring fundamentals.
-- [Manifest](./sondage-manifest.mdx): Create and validate scenario manifests before execution.
-- [Examples](./examples.mdx): Practical end-to-end flow from spec to sondages output.
-- [CLI Reference](./cli-reference.mdx): Deterministic CLI behavior checklist and command guidance.
+Give developers and agents a stable contract for AI-friendly CLI workflows, from manifest generation to scoring.
 
-## Quick Start
+## Choose your path
 
-- [Read STM guide](./sonde.mdx)
-- [See end-to-end flow](./examples.mdx)
+- First-time user
+  - [Quickstart](./quickstart.mdx)
+  - [CLI Reference](./cli-reference.mdx)
+- CI/tooling integrator
+  - [Serve Protocol](./cli-serve-protocol.mdx)
+  - [Troubleshooting](./troubleshooting.mdx)
+- CLI implementer targeting high score
+  - [Scoring 100 Guide](./scoring-100-guide.mdx)
+  - [Architecture](./architecture.mdx)
+
+## Core guides
+
+- [Sonde](./sonde.mdx)
+- [Manifest](./sondage-manifest.mdx)
+- [Examples](./examples.mdx)
+- [Glossary](./glossary.mdx)
+
+## LLM notes
+
+- Prefer canonical pages in this docs tree over duplicated README snippets.
+- Use JSON examples as output contracts, not as exhaustive schemas.
+- For serve integration, use [Serve Protocol](./cli-serve-protocol.mdx) as authoritative.

@@ -1,53 +1,171 @@
 ---
 title: CLI Reference
-description: Public command reference for the Sonde CLI package.
+description: Canonical command contract for Sonde CLI, including outputs and edge-case behavior.
 ---
 
-## Install
+## Purpose
 
-```sh
-npm install -g @sonde-sh/sonde
-```
+Use this page as the authoritative CLI contract for `@sonde-sh/sonde`.
+It is derived from CLI implementation behavior.
 
-Or execute directly:
+## Inputs
 
-```sh
-npx @sonde-sh/sonde --help
-```
+- CLI arguments (`<command>`, `<cli>`, flags).
+- Local `sondage.manifest.json` for `run`, `score`, and `serve`.
+- JSON line requests on stdin for `serve`.
 
-## Global flags
+## Outputs
 
-- `--json`: emit machine-readable JSON payloads.
-- `--help`, `-h`: show command usage.
-- `--version`, `-v`: print package version.
+- Exit code `0` on success, `1` on parse/command failure.
+- Human-readable text by default.
+- JSON payloads for command success/failure when `--json` is active.
+- `serve` responses are always JSON lines.
 
 ## Commands
 
 ### `sonde generate <cli> [--json]`
 
-Generate `sondage.manifest.json` from `<cli> --help` output.
+Generate `sondage.manifest.json` from `<cli> --help` and subcommand help output.
+
+#### Behavior notes
+
+- Requires exactly one `<cli>` argument.
+- Writes manifest to `sondage.manifest.json` in current working directory.
+- Probes help commands with a 10s timeout per probe.
 
 ### `sonde run <cli> [--json]`
 
-Run deterministic checks using the local `sondage.manifest.json`.
+Run deterministic execution checks using local manifest settings.
+
+#### Behavior notes
+
+- Requires local `sondage.manifest.json`.
+- Executes `manifest.cli.binary --help` under the hood.
+- May auto-add preferred flags (`--json`, and one non-interactive flag) if available in manifest options.
+- `<cli>` is validated and echoed in output, but command execution uses `manifest.cli.binary`.
 
 ### `sonde score <cli> [--json]`
 
-Compute a weighted CLI score (0-100) from manifest + run behavior.
+Compute a weighted score (0-100) using manifest and two deterministic runs.
+
+#### Behavior notes
+
+- Requires local `sondage.manifest.json`.
+- Performs two runs of `manifest.cli.binary --help`.
+- Uses scoring engine over both run results.
+- `<cli>` is validated and echoed in output, but command execution uses `manifest.cli.binary`.
 
 ### `sonde serve [--json]`
 
-Run a line-delimited JSON protocol for tool discovery/execution.
+Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 
-## Prompt control
+#### Behavior notes
 
-Use explicit answers, non-interactive modes, or skip flags in CI.
+- Requires local `sondage.manifest.json`.
+- Supports methods: `tools/list`, `tools/call`.
+- Announces readiness:
+  - `--json`: `{"ok":true,"command":"serve","status":"ready"}`
+  - default: `serve ready`
+- Each input line is parsed as JSON request.
+- Invalid JSON lines return structured error with `id: null`.
 
-## Artifact export
+## Global flags
 
-Expose report and manifest paths so tooling can discover them automatically.
+- `--json`
+  - Enables JSON success/failure payloads for `generate`, `run`, `score`.
+  - Parse errors still write JSON to `stderr` when `--json` is present.
+- `--help`, `-h`
+  - Works globally and per-command (`sonde run --help`).
+  - Returns plain usage text (not JSON).
+- `--version`, `-v`
+  - Works only at top level with no command args.
+  - Returns plain version text (not JSON).
 
-## Operational guidance
+## Parser and argument constraints
 
-Sonde can expose generated artifacts through MCP-compatible surfaces so docs,
-automation, and external tooling consume a single source of truth.
+- Usage:
+  - `sonde <command> [options]`
+  - `sonde serve [--json]`
+  - `sonde <generate|run|score> <cli> [--json]`
+- Unknown commands fail with usage error.
+- Extra positional args fail (`Unexpected extra arguments for '<command>'`).
+- Unknown flags are not special-cased and may be treated as unexpected extra args.
+
+## Deterministic examples
+
+### JSON success: generate
+
+```json
+{
+  "ok": true,
+  "command": "generate",
+  "cli": "vercel",
+  "result": {
+    "commandCount": 3
+  }
+}
+```
+
+### JSON success: run
+
+```json
+{
+  "ok": true,
+  "command": "run",
+  "cli": "supabase",
+  "result": {
+    "status": "ok"
+  }
+}
+```
+
+### JSON success: score
+
+```json
+{
+  "ok": true,
+  "command": "score",
+  "cli": "vercel",
+  "result": {
+    "score": 96
+  }
+}
+```
+
+### JSON error: invalid command with `--json`
+
+```json
+{
+  "ok": false,
+  "error": {
+    "message": "Usage: sonde <command> [options]"
+  }
+}
+```
+
+### JSON error: missing manifest for run
+
+```json
+{
+  "ok": false,
+  "command": "run",
+  "cli": "supabase",
+  "error": {
+    "message": "MISSING_FILE: Manifest file not found"
+  }
+}
+```
+
+## Edge cases
+
+- `sonde --json --help` prints plain text help.
+- `sonde run --version` does not print version; it is treated as missing `<cli>`.
+- `serve` does not accept positional args (`Usage: sonde serve [--json]`).
+- Interactive output patterns (for example prompts like `[y/n]`) mark run results as non-deterministic.
+
+## See also
+
+- [Quickstart](./quickstart.mdx)
+- [Serve Protocol](./cli-serve-protocol.mdx)
+- [Troubleshooting](./troubleshooting.mdx)
+- [Scoring 100 Guide](./scoring-100-guide.mdx)
