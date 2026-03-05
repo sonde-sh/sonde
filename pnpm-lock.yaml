@@ -97,6 +97,12 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  examples/cli-bad: {}
+
+  examples/cli-good: {}
+
+  examples/cli-ok: {}
+
   packages/eslint-config:
     devDependencies:
       '@eslint/js':

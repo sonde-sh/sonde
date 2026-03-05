@@ -108,7 +108,7 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
 - Manifest `version` is semantic versioning and must follow `major.minor.patch`.
 - Current supported manifest major version is `1`; other major versions return `UNSUPPORTED_VERSION`.
 - JSON command payloads include `apiVersion` so consumers can parse envelopes safely.
-- Score reports include `reportVersion` and `manifestVersion`.
+- Score reports include `manifestVersion` and `generatedAt`.
 - Serve protocol messages include `protocolVersion`.
 
 ## Deterministic examples
@@ -150,8 +150,8 @@ Start JSON-line tool protocol server backed by `sondage.manifest.json`.
   "command": "score",
   "cli": "vercel",
   "result": {
-    "reportVersion": "1.0.0",
     "manifestVersion": "1.0.0",
+    "generatedAt": "2026-03-05T00:00:00.000Z",
     "total": 96
   }
 }

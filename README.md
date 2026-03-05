@@ -26,7 +26,7 @@ Start here:
 - The manifest contract is versioned in `sondage.manifest.json` via `version`.
 - Command JSON envelopes include `apiVersion` to keep integrations parse-safe.
 - Serve protocol readiness and responses include `protocolVersion`.
-- Score reports include `reportVersion` and `manifestVersion` for compatibility tracking.
+- Score reports include `manifestVersion` and `generatedAt` for compatibility and freshness tracking.
 
 ## Reference implementation (CLI)
 
@@ -53,6 +53,11 @@ sonde serve [--json]
 For complete behavior, outputs, and edge cases, use the canonical [CLI reference](./apps/web/content/docs/reference-implementation/cli-reference.mdx).
 For normative contract semantics, start with [Sonde](./apps/web/content/docs/foundations/sonde.mdx) and [Manifest](./apps/web/content/docs/foundations/sondage-manifest.mdx).
 
+## Examples and fixtures
+
+- Runnable compatibility fixtures live in `examples/cli-good`, `examples/cli-ok`, and `examples/cli-bad`.
+- Use runnable fixtures for deterministic local demos and test automation.
+
 ## Packages
 
 - `@sonde-sh/sonde`: CLI binary (`sonde`)
@@ -65,7 +70,7 @@ For normative contract semantics, start with [Sonde](./apps/web/content/docs/fou
 
 - Current supported manifest major version is `1`; loading a different major returns `UNSUPPORTED_VERSION`.
 - Manifest versioning follows semantic versioning (`major.minor.patch`).
-- Report and protocol version fields are intended as machine-consumable compatibility guards.
+- Protocol version fields are intended as machine-consumable compatibility guards.
 
 ## Local development
 

@@ -1,0 +1,9 @@
+{
+  "name": "@sonde-sh/example-cli-good",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "cli-good": "./bin/cli-good.js"
+  }
+}

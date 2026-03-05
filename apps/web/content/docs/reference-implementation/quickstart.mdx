@@ -17,7 +17,7 @@ Get from zero to a reproducible manifest workflow in a few commands using the re
 ## Inputs
 
 - Node.js and npm/pnpm installed.
-- A target CLI available in `PATH` (example: `vercel`).
+- A target CLI available in `PATH` (recommended local fixture: [`cli-good`](https://github.com/sonde-sh/sonde/tree/main/examples/cli-good)).
 - Write access in current working directory.
 
 ## Outputs
@@ -37,7 +37,7 @@ npx @sonde-sh/sonde --help
 ### 2) Generate manifest
 
 ```sh
-sonde generate vercel --json
+sonde generate cli-good --json
 ```
 
 Expected output shape:
@@ -47,13 +47,13 @@ Expected output shape:
   "ok": true,
   "apiVersion": "1.0.0",
   "command": "generate",
-  "cli": "vercel",
+  "cli": "cli-good",
   "result": {
     "manifest": {
       "version": "1.0.0"
     },
     "outputPath": "sondage.manifest.json",
-    "commandCount": 0
+    "commandCount": 2
   }
 }
 ```
@@ -84,7 +84,7 @@ Expected output shape:
 ### 4) Run deterministic check
 
 ```sh
-sonde run vercel --json
+sonde run cli-good --json
 ```
 
 Expected output shape:
@@ -94,7 +94,7 @@ Expected output shape:
   "ok": true,
   "apiVersion": "1.0.0",
   "command": "run",
-  "cli": "vercel",
+  "cli": "cli-good",
   "result": {
     "ok": true,
     "exitCode": 0
@@ -105,7 +105,7 @@ Expected output shape:
 ### 5) Compute score
 
 ```sh
-sonde score vercel --json
+sonde score cli-good --json
 ```
 
 Expected output shape:
@@ -115,10 +115,10 @@ Expected output shape:
   "ok": true,
   "apiVersion": "1.0.0",
   "command": "score",
-  "cli": "vercel",
+  "cli": "cli-good",
   "result": {
-    "reportVersion": "1.0.0",
     "manifestVersion": "1.0.0",
+    "generatedAt": "2026-03-05T00:00:00.000Z",
     "total": 100
   }
 }
@@ -129,6 +129,7 @@ Expected output shape:
 - If target CLI is missing, generation fails with execution error.
 - `run` and `score` require `sondage.manifest.json` in current directory.
 - If CLI output looks interactive, run quality decreases and score may drop.
+- For stable local docs/testing, prefer [`cli-good`](https://github.com/sonde-sh/sonde/tree/main/examples/cli-good) and compare against [`cli-ok`](https://github.com/sonde-sh/sonde/tree/main/examples/cli-ok) / [`cli-bad`](https://github.com/sonde-sh/sonde/tree/main/examples/cli-bad) to understand scoring trade-offs.
 - Manifest loading fails with `UNSUPPORTED_VERSION` when manifest major version is not supported.
 
 ## See also

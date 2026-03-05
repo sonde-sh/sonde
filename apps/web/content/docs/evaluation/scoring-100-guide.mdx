@@ -60,8 +60,8 @@ Target:
   "apiVersion": "1.0.0",
   "command": "score",
   "result": {
-    "reportVersion": "1.0.0",
     "manifestVersion": "1.0.0",
+    "generatedAt": "2026-03-05T00:00:00.000Z",
     "total": 100
   }
 }
@@ -87,7 +87,7 @@ Target:
 ## Versioning and compatibility
 
 - Ensure manifest `version` remains on supported major version `1` while upgrading Sonde.
-- Use report fields `reportVersion` and `manifestVersion` to branch parsing logic in downstream pipelines.
+- Use `manifestVersion` to enforce compatibility and `generatedAt` to track report freshness.
 
 ## Edge cases
 

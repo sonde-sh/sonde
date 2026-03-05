@@ -26,7 +26,6 @@ export interface ScoreInput {
 }
 
 export interface ScoreReport {
-  reportVersion: "1.0.0";
   manifestVersion: string;
   cli: string;
   total: number;
@@ -353,7 +352,6 @@ export function scoreManifest(input: ScoreInput): ScoreReport {
   );
 
   return {
-    reportVersion: "1.0.0",
     manifestVersion: input.manifest.version,
     cli: input.manifest.cli.name,
     total,

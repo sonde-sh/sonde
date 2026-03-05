@@ -18,13 +18,27 @@ Provide practical command sequences for common Sonde usage patterns when buildin
 - Run result payload.
 - Score payload.
 
+## Recommended deterministic fixtures
+
+For reproducible local demos, use:
+
+- [`cli-good`](https://github.com/sonde-sh/sonde/tree/main/examples/cli-good): fully automation-friendly fixture.
+- [`cli-ok`](https://github.com/sonde-sh/sonde/tree/main/examples/cli-ok): partially automation-friendly fixture.
+- [`cli-bad`](https://github.com/sonde-sh/sonde/tree/main/examples/cli-bad): intentionally noisy/interactive fixture.
+
+### Why good vs bad
+
+- `cli-good` is designed for deterministic automation: stable help, `--json`, and agent-safe flags.
+- `cli-bad` is designed to fail automation checks: prompt markers (`[y/n]`), noisy output, and weak machine-readable conventions.
+- `cli-ok` sits in between and is useful as a regression middle-ground.
+
 ## Example: baseline evaluation
 
 ```sh
-sonde generate vercel --json
+sonde generate cli-good --json
 sonde manifest --json
-sonde run vercel --json
-sonde score vercel --json
+sonde run cli-good --json
+sonde score cli-good --json
 ```
 
 ## Example: protocol mode for tooling
@@ -43,10 +57,10 @@ Then write newline-delimited requests:
 ## Example: CI-safe invocation
 
 ```sh
-sonde generate supabase --json
+sonde generate cli-ok --json
 sonde manifest --json
-sonde run supabase --json
-sonde score supabase --json
+sonde run cli-ok --json
+sonde score cli-ok --json
 ```
 
 Use JSON output in CI and parse `ok` + command result fields.
@@ -55,7 +69,7 @@ Use JSON output in CI and parse `ok` + command result fields.
 
 - If a target CLI lacks stable help output, regenerate manifest after CLI upgrades.
 - If run output includes prompts, fix CLI non-interactive behavior before relying on score.
-- `sondage.manifest.json` is Sonde's contract artifact; fixture `manifest.json` files are separate tool-protocol examples.
+- `sondage.manifest.json` is Sonde's contract artifact used by `run`, `score`, and `serve`.
 
 ## See also
 

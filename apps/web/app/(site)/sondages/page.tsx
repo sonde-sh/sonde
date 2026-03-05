@@ -84,7 +84,7 @@ export async function SondagesPage() {
                   <TableRow>
                     <TableHead>CLI</TableHead>
                     <TableHead>Manifest</TableHead>
-                    <TableHead>Report</TableHead>
+                    <TableHead>Last updated</TableHead>
                     <TableHead>Schema</TableHead>
                     <TableHead>Score</TableHead>
                     <TableHead>JSON</TableHead>
@@ -102,7 +102,7 @@ export async function SondagesPage() {
                         </Link>
                       </TableCell>
                       <TableCell>{row.manifestVersion}</TableCell>
-                      <TableCell>{row.reportVersion}</TableCell>
+                      <TableCell>{row.lastUpdatedAt}</TableCell>
                       <TableCell>
                         <Badge variant={isPositive(row.schemaStatus) ? "success" : "neutral"}>
                           {row.schemaStatus}

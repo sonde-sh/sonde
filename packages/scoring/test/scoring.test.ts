@@ -73,7 +73,6 @@ describe("scoring", () => {
 
     expect(report.total).toBeGreaterThanOrEqual(0);
     expect(report.total).toBeLessThanOrEqual(100);
-    expect(report.reportVersion).toBe("1.0.0");
     expect(report.manifestVersion).toBe("1.0.0");
     expect(report.metrics).toHaveLength(6);
     expect(report.metrics.some((metric) => metric.id === "aiNativeReadiness")).toBe(true);

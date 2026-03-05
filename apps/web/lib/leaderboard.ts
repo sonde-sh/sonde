@@ -5,7 +5,7 @@ export interface LeaderboardRow {
   cli: string;
   score: string;
   manifestVersion: string;
-  reportVersion: string;
+  lastUpdatedAt: string;
   schemaStatus: string;
   jsonSupport: string;
   interactivePrompts: string;
@@ -122,9 +122,13 @@ function parseRow(row: unknown, sourceFile: string): ParsedRow | null {
         readString(row.manifest_version) ??
         readString(row.version) ??
         "-",
-      reportVersion:
-        readString(row.reportVersion) ??
-        readString(row.report_version) ??
+      lastUpdatedAt:
+        readString(row.lastUpdatedAt) ??
+        readString(row.last_updated_at) ??
+        readString(row.generatedAt) ??
+        readString(row.generated_at) ??
+        readString(row.updatedAt) ??
+        readString(row.updated_at) ??
         "-",
       schemaStatus: readBooleanLike(
         row.schemaValid ?? row.schema_valid ?? row.contractStatus ?? row.contract_status,
@@ -213,7 +217,7 @@ export async function loadLeaderboardRows(): Promise<{
         cli: path.basename(fileName, ".json"),
         score: "-",
         manifestVersion: "-",
-        reportVersion: "-",
+        lastUpdatedAt: "-",
         schemaStatus: "-",
         jsonSupport: "-",
         interactivePrompts: "-",

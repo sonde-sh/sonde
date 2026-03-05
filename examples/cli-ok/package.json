@@ -1,0 +1,9 @@
+{
+  "name": "@sonde-sh/example-cli-ok",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "cli-ok": "./bin/cli-ok.js"
+  }
+}
