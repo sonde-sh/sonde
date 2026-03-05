@@ -1,0 +1,7 @@
+{
+  "cli": "vercel",
+  "score": 91,
+  "jsonSupport": true,
+  "interactivePrompts": false,
+  "notes": "Stable JSON output and non-interactive deploy flow."
+}

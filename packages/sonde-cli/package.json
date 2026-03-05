@@ -1,0 +1,26 @@
+{
+  "name": "@repo/sonde-cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "sonde": "./dist/src/bin.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@repo/generator": "workspace:*",
+    "@repo/runtime": "workspace:*",
+    "@repo/scoring": "workspace:*",
+    "@repo/spec": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "typescript": "5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,0 +1,25 @@
+---
+title: Manifest Generation Guide
+description: Define and validate scenario manifests that power Sonde runners and downstream report tooling.
+---
+
+## What it is
+
+A normalized artifact describing CLI identity, scenarios, expected behavior, and
+scoring weights.
+
+## When to use
+
+Generate manifests before execution to lock scenario intent and avoid drift across
+local and CI runs.
+
+## Outputs
+
+Store validated manifest artifacts next to report JSON files so Sonde and other
+tools can discover them.
+
+## Key flow
+
+1. Generate manifests from source test specs.
+2. Validate schema before execution starts.
+3. Publish artifacts with the produced report files.

@@ -1,0 +1,4 @@
+{
+  "title": "Sonde Docs",
+  "pages": ["index", "sonde", "sondage-manifest", "examples", "cli-reference"]
+}

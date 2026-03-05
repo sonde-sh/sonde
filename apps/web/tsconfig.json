@@ -6,13 +6,19 @@
         "name": "next"
       }
     ],
-    "strictNullChecks": true
+    "baseUrl": ".",
+    "strictNullChecks": true,
+    "paths": {
+      "fumadocs-mdx:collections/*": ["./.source/*"]
+    }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "**/*.mdx",
     "next-env.d.ts",
     "next.config.js",
+    "source.config.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]

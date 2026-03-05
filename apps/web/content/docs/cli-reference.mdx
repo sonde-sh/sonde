@@ -1,0 +1,21 @@
+---
+title: CLI Implementation Checklist
+description: Keep CLI workflows deterministic, scriptable, and compatible with Sonde report ingestion.
+---
+
+## Machine-readable output
+
+Prefer deterministic flags such as `--json` for pipeline-friendly parsing.
+
+## Prompt control
+
+Use explicit answers, non-interactive modes, or skip flags in CI.
+
+## Artifact export
+
+Expose report and manifest paths so tooling can discover them automatically.
+
+## Operational guidance
+
+Sonde can expose generated artifacts through MCP-compatible surfaces so docs,
+automation, and external tooling consume a single source of truth.

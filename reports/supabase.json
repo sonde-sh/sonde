@@ -1,0 +1,7 @@
+{
+  "cli": "supabase",
+  "score": 84,
+  "jsonSupport": true,
+  "interactivePrompts": true,
+  "notes": "Mostly deterministic, prompts appear on auth flows."
+}
