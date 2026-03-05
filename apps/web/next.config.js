@@ -4,16 +4,20 @@ import { createMDX } from "fumadocs-mdx/next";
 const nextConfig = {
   async redirects() {
     return [
-      { source: "/sonde", destination: "/docs/sonde", permanent: true },
+      { source: "/sonde", destination: "/docs/foundations/sonde", permanent: true },
       {
         source: "/sondage-manifest",
-        destination: "/docs/sondage-manifest",
+        destination: "/docs/foundations/sondage-manifest",
         permanent: true,
       },
-      { source: "/examples", destination: "/docs/examples", permanent: true },
+      {
+        source: "/examples",
+        destination: "/docs/integration/examples",
+        permanent: true,
+      },
       {
         source: "/cli-reference",
-        destination: "/docs/cli-reference",
+        destination: "/docs/reference-implementation/cli-reference",
         permanent: true,
       },
     ];

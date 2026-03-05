@@ -71,9 +71,9 @@ export function HomePage() {
             </CardHeader>
             <CardContent>
               <pre className="overflow-x-auto rounded-md border border-(--border) bg-(--muted) p-3 text-xs leading-relaxed text-(--foreground)">
-                <code>{`pnpm add -D sonde
-pnpm sonde run --manifest ./manifest.json
-pnpm sonde web`}</code>
+                <code>{`npx @sonde-sh/sonde generate cli-good --json
+npx @sonde-sh/sonde score cli-good --json
+npx @sonde-sh/sonde publish cli-good --json`}</code>
               </pre>
             </CardContent>
           </Card>
@@ -221,9 +221,9 @@ pnpm sonde web`}</code>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-(--muted-foreground)">
               <pre className="overflow-x-auto rounded-md border border-(--border) bg-(--muted) p-3 text-xs leading-relaxed text-(--foreground)">
-                <code>{`pnpm sonde run --manifest ./manifest.json
-pnpm sonde web
-# optional: export reports for CI artifacts`}</code>
+                <code>{`sonde generate <cli> --json
+sonde run <cli> --json
+sonde score <cli> --json`}</code>
               </pre>
               <Link className="inline-flex items-center gap-1 font-medium hover:underline" href="/docs">
                 Integration guide

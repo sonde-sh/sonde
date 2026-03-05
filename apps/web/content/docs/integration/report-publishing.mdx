@@ -1,0 +1,121 @@
+---
+title: Publish Sonde Reports
+description: Publish and approve Sonde score reports for the public website leaderboard.
+---
+
+## Purpose
+
+Define the report submission and moderation contract used by `sonde publish` and the Sonde web APIs.
+
+## Inputs
+
+- Local Sonde score payload (`sonde score <cli> --json`).
+- Publisher token (`SONDE_PUBLISH_TOKEN`).
+- Web API endpoint (`SONDE_PUBLISH_URL`).
+- Admin token for moderation (`SONDE_REPORTS_ADMIN_TOKEN`).
+
+## Outputs
+
+- Pending report record persisted by web storage.
+- Approved report record moved to public leaderboard storage.
+- Stable JSON responses for both publisher and admin flows.
+
+## Lifecycle
+
+1. CLI author runs `sonde publish <cli> --json`.
+2. Sonde computes score payload and sends it to `/api/reports/publish`.
+3. API validates payload and stores it as `pending`.
+4. Maintainer approves report via `/api/reports/approve`.
+5. Approved report is visible in `/sondages`.
+
+## Publisher flow
+
+Set required env vars for the CLI:
+
+```sh
+export SONDE_PUBLISH_URL="https://sonde.dev/api/reports/publish"
+export SONDE_PUBLISH_TOKEN="<shared-publish-token>"
+```
+
+Publish:
+
+```sh
+sonde publish <cli> --json
+```
+
+Request authentication header:
+
+- `x-sonde-publish-token: <SONDE_PUBLISH_TOKEN>`
+
+Typical API acceptance response (`202`):
+
+```json
+{
+  "ok": true,
+  "id": "my-cli-2026-03-05T00-00-00-000Z-ab12cd34",
+  "status": "pending",
+  "submittedAt": "2026-03-05T00:00:00.000Z"
+}
+```
+
+## Admin approval flow
+
+Web API requires:
+
+- `SONDE_REPORTS_ADMIN_TOKEN`
+- `BLOB_READ_WRITE_TOKEN`
+
+Approve a pending report:
+
+```sh
+curl -X POST "https://sonde.dev/api/reports/approve" \
+  -H "content-type: application/json" \
+  -H "x-sonde-admin-token: <SONDE_REPORTS_ADMIN_TOKEN>" \
+  -d '{"id":"my-cli-2026-03-05T00-00-00-000Z-ab12cd34","approvedBy":"maintainer"}'
+```
+
+Typical approval response (`200`):
+
+```json
+{
+  "ok": true,
+  "id": "my-cli-2026-03-05T00-00-00-000Z-ab12cd34",
+  "status": "approved",
+  "approvedAt": "2026-03-05T00:10:00.000Z"
+}
+```
+
+## Report payload contract
+
+Payload fields validated by publish API:
+
+- `cli`
+- `manifestVersion`
+- `generatedAt` (RFC3339 date-time)
+- `schemaValid`
+- `score`
+- `jsonSupport`
+- `interactivePrompts`
+- `notes`
+- optional: `publisherId`, `sourceVersion`, `report`
+
+## Manifest schema URL
+
+The STM manifest schema id is:
+
+- `https://sonde.dev/schemas/stm-manifest-v1.schema.json`
+
+Use that URL for external schema-aware tooling.
+
+## Edge cases
+
+- Missing or invalid publish token returns `401`.
+- Missing publish/admin server config returns `503`.
+- Invalid payload returns `400`.
+- Approval fails if pending report id does not exist.
+
+## See also
+
+- [CLI Reference](/docs/reference-implementation/cli-reference)
+- [Manifest](/docs/foundations/sondage-manifest)
+- [Scoring 100 Guide](/docs/evaluation/scoring-100-guide)

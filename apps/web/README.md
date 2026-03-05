@@ -25,5 +25,5 @@ pnpm --filter web start
 ## Relevant routes
 
 - `/`: project overview
-- `/leaderboard`: score summaries
+- `/sondages`: score summaries
 - `/docs/*`: documentation pages

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sonde.dev/schemas/stm-manifest-v1.schema.json",
+  "title": "STM Manifest (major v1)",
+  "type": "object",
+  "required": ["version", "generatedAt", "cli", "globalOptions", "commands"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)(?:-((?:0|[1-9]\\\\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\\\.(?:0|[1-9]\\\\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\\\+([0-9A-Za-z-]+(?:\\\\.[0-9A-Za-z-]+)*))?$"
+    },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "cli": {
+      "type": "object",
+      "required": ["name", "binary"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "binary": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" }
+      }
+    },
+    "globalOptions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/option" }
+    },
+    "commands": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/command" }
+    }
+  },
+  "$defs": {
+    "option": {
+      "type": "object",
+      "required": ["long", "takesValue"],
+      "additionalProperties": false,
+      "properties": {
+        "long": { "type": "string", "minLength": 2 },
+        "short": { "type": "string", "minLength": 2 },
+        "description": { "type": "string" },
+        "takesValue": { "type": "boolean" },
+        "valueHint": { "type": "string" }
+      }
+    },
+    "command": {
+      "type": "object",
+      "required": [
+        "name",
+        "path",
+        "options",
+        "subcommands",
+        "supportsJson",
+        "mayPrompt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "path": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "description": { "type": "string" },
+        "usage": { "type": "string" },
+        "options": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/option" }
+        },
+        "subcommands": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "supportsJson": { "type": "boolean" },
+        "mayPrompt": { "type": "boolean" }
+      }
+    }
+  }
+}
