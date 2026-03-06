@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 const execFileAsync = promisify(execFile);
 const packageRoot = path.resolve(
@@ -15,13 +15,15 @@ const packageRoot = path.resolve(
 const workspaceRoot = path.resolve(packageRoot, "..", "..");
 
 describe("sonde binary", () => {
+  beforeAll(async () => {
+    await execFileAsync("pnpm", ["--filter", "@sonde-sh/sonde...", "build"], {
+      cwd: workspaceRoot,
+    });
+  }, 30_000);
+
   it(
     "runs the built dist binary in json mode",
     async () => {
-    await execFileAsync("pnpm", ["build"], {
-      cwd: workspaceRoot,
-    });
-
     const fixtureDir = await mkdtemp(path.join(tmpdir(), "sonde-cli-bin-test-"));
     const manifestPath = path.join(fixtureDir, "sondage.manifest.json");
     await writeFile(
@@ -70,10 +72,6 @@ describe("sonde binary", () => {
   it(
     "prints built-in manifest in json mode",
     async () => {
-      await execFileAsync("pnpm", ["build"], {
-        cwd: workspaceRoot,
-      });
-
       const result = await execFileAsync("node", [
         path.join(packageRoot, "dist/src/bin.js"),
         "manifest",
