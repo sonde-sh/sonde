@@ -1,5 +1,16 @@
 # @sonde-sh/sonde
 
+## 0.2.1
+
+### Patch Changes
+
+- 18a7353: Improve release reliability by fetching full git history in CI and make CLI version tests read the package version dynamically.
+- Updated dependencies [18a7353]
+  - @sonde-sh/spec@0.2.1
+  - @sonde-sh/runtime@0.2.1
+  - @sonde-sh/generator@0.2.1
+  - @sonde-sh/scoring@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

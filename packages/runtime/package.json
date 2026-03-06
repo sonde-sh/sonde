@@ -1,6 +1,6 @@
 {
   "name": "@sonde-sh/runtime",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Deterministic command runtime used for Sonde manifest execution checks.",
   "type": "module",
   "private": false,
