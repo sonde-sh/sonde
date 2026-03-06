@@ -1,6 +1,6 @@
 {
   "name": "@sonde-sh/scoring",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Scoring engine for manifest-aligned AI-native CLI behavior.",
   "type": "module",
   "private": false,
