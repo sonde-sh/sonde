@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { CliIo, SondeManifest } from "../src/types.js";
 
@@ -60,6 +63,17 @@ function createIo(inputLines: string[] = []): {
   };
 
   return { io, stdout, stderr };
+}
+
+async function readExpectedCliVersion(): Promise<string> {
+  const currentFile = fileURLToPath(import.meta.url);
+  const packageJsonPath = path.resolve(path.dirname(currentFile), "../package.json");
+  const packageJsonRaw = await readFile(packageJsonPath, "utf8");
+  const parsed = JSON.parse(packageJsonRaw) as { version?: unknown };
+  if (typeof parsed.version !== "string" || parsed.version.length === 0) {
+    throw new Error("Invalid package.json version");
+  }
+  return parsed.version;
 }
 
 describe("sonde CLI", () => {
@@ -443,13 +457,14 @@ describe("sonde CLI", () => {
   it("returns version with --version", async () => {
     const { runCli } = await import("../src/cli.js");
     const { io, stdout, stderr } = createIo();
+    const expectedVersion = await readExpectedCliVersion();
 
     const exitCode = await runCli(["--version"], io);
 
     expect(exitCode).toBe(0);
     expect(stderr).toEqual([]);
     expect(stdout).toHaveLength(1);
-    expect(stdout.at(0)).toBe("0.1.0");
+    expect(stdout.at(0)).toBe(expectedVersion);
   });
 
   it("returns error payload when manifest loading fails", async () => {
