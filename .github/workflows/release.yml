@@ -23,6 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
+          node-version: 24
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
@@ -32,20 +33,12 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Validate release token
-        run: |
-          if [ -z "${{ secrets.RELEASE_GITHUB_TOKEN }}" ]; then
-            echo "Missing RELEASE_GITHUB_TOKEN secret."
-            echo "Configure a PAT or GitHub App token with contents:write and pull_requests:write."
-            exit 1
-          fi
-
       - name: Create release PR or publish
         uses: changesets/action@v1
         with:
           version: pnpm version-packages
           publish: pnpm release
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
